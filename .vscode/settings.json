@@ -6,6 +6,7 @@
         "sdl.h": "c",
         "sdl_image.h": "c",
         "math.h": "c",
-        "graphical_api.h": "c"
+        "graphical_api.h": "c",
+        "utils.h": "c"
     }
 }

@@ -7,16 +7,16 @@ CC := gcc
 CFLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -Wall -lSDL2_image -lm
 
 # add header files here
-HDRS := src/c/graphical_api.h
+HDRS := src/c/graphical_api.h src/c/utils.h
 
 # add source files here
-SRCS := src/c/main.c src/c/graphical_api.c
+SRCS := src/c/main.c src/c/utils.c  src/c/graphical_api.c test/c/utils_test.c
 
 # generate names of object files
 OBJS := $(SRCS:.c=.o)
 
 # name of executable
-EXEC := out/PreHistoricWorld
+EXEC := out/PrehistoricWorld
 
 # default recipe
 all: $(EXEC)

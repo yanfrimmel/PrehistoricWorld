@@ -1,7 +1,8 @@
 #ifndef GRAPHICAL_API_H   /* Include guard */
 #define GRAPHICAL_API_H
-
-void show(int x, int y, _Bool is_full_screen);  /* An example function declaration */
+//flags: 1 = full screen
+int showWindow(int window_width, int widow_height, int flags);  /* An example function declaration */
 int initialize_sdl(void);
+void quit_sdl(void** textures, void** renderers, void** window);
 
 #endif 
