@@ -40,5 +40,5 @@ void test_apply_function_to_all_sub_pointers(void) {
 }
 
 int main() {
-	test_applyfunction();
+	test_apply_function_to_all_sub_pointers();
 }
