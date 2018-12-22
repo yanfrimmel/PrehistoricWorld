@@ -2,16 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "Makefile",
             "type": "shell",
-            "command": "gcc",
-            "args": [
-                "${workspaceFolder}/src/main.c" , "-o" , "${workspaceFolder}/out/PreHistoricWorld"
-            ],
+            "command": "make",
+
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+
+            "args": ["all"],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
         }
     ]
 }

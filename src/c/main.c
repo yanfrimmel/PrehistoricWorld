@@ -1,7 +1,7 @@
-
 #include <stdio.h>
+#include "graphical_api.h"
 
 int main( int argc, char** argv ) {
-	printf("hello");
+	initialize_sdl();
     return 0;
 }
