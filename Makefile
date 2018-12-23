@@ -1,36 +1,44 @@
-# A simple Makefile for compiling small SDL projects
-
-# set the compiler
 CC := gcc
-
-# set the compiler flags
-CFLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -Wall -lSDL2_image -lm
-
-# add header files here
-HDRS := src/c/graphical_api.h src/c/utils.h
-
-# add source files here
-SRCS := src/c/main.c src/c/utils.c  src/c/graphical_api.c test/c/utils_test.c
-
-# generate names of object files
-OBJS := $(SRCS:.c=.o)
-
-# name of executable
+FLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wall
+HDRS := $(wildcard src/c/*.h) 
+SRCS := $(wildcard src/c/*.c)
+OBJS := $(SRCS:src/c/%.c=tmp/%.o)
 EXEC := out/PrehistoricWorld
+#---------------------------------------------------------- test
+FLAGS_TEST    := $(FLAGS)
+SRCS_TEST     := $(wildcard test/c/*.c)
+OBJS_TEST     := $(filter-out tmp/main.o, $(OBJS)) $(SRCS_TEST:test/c/%.c=tmp/%.o)
+EXEC_TEST     := out/test
 
-# default recipe
+.SUFFIXES:
+#---------------------------------------------------------- Targets
+
+.PHONY: all
+
 all: $(EXEC)
 
-# recipe for building the final executable
 $(EXEC): $(OBJS) $(HDRS) Makefile
-	$(CC) -o $@ $(OBJS) $(CFLAGS)
+	$(CC) -o $@ $(OBJS) $(FLAGS) && echo "EXEC [OK]  $@"
 
-# recipe for building object files
-#$(OBJS): $(@:.o=.c) $(HDRS) Makefile
-#	$(CC) -o $@ $(@:.o=.c) -c $(CFLAGS)
+# --------------------------------------------------------------
 
-# recipe to clean the workspace
-clean:
-	rm -f $(EXEC) $(OBJS)
+.PHONY: test
 
-.PHONY: all clean
+test: $(EXEC_TEST)
+
+$(EXEC_TEST): $(OBJS_TEST)
+	$(CC) -o $@ $(OBJS_TEST) $(FLAGS_TEST) && echo "EXEC_TEST [OK] $@"
+
+# --------------------------------------------------------------
+
+tmp/%.o: src/c/%.c
+	@$(CC) $(FLAGS) -c $< -o $@ && echo "tmp/%.o: src/c/%.c [OK]  $@"
+
+tmp/%.o: test/c/%.c
+	@$(CC) $(FLAGS_TEST) -c $< -o $@ && echo "tmp/%.o: test/c/%.c [OK]  $@"
+
+.PHONY: clean, clear
+
+clean clear:
+	@rm -f out/* && echo "[CL]  out/"
+	@rm -f tmp/* && echo "[CL]  tmp/"
