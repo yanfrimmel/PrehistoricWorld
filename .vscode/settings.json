@@ -7,6 +7,7 @@
         "sdl_image.h": "c",
         "math.h": "c",
         "graphical_api.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "sdl_timer.h": "c"
     }
 }

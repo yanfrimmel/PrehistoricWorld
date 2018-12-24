@@ -4,14 +4,18 @@
 #include <string.h>
 
 #include "../../src/c/utils.h"
-
-void string_edit_function(char* word){
+/**
+ * functions are static since I don't use headers for test files -
+ * static makes the function to be defined once,
+ * and not in every file that uses the same function
+ */
+static void change_char_in_word_function(char* word){
    word[0] = 'b';
    word[1] = 'a';
    word[2] = 'a';
 }
 
-void test_apply_function_to_all_sub_pointers(void) {
+static void test_apply_function_to_all_sub_pointers(void) {
     puts("test_apply_function_to_all_sub_pointers: ");
     char *word;
     char **sentence;
@@ -30,7 +34,7 @@ void test_apply_function_to_all_sub_pointers(void) {
     assert(sentence[0][1] == 'o');
     assert(sentence[0][2] == 'o');
 
-    apply_function_to_all_sub_pointers((char*)sentence, string_edit_function);
+    apply_function_to_all_sub_pointers((char*)sentence, change_char_in_word_function);
 
     assert(sentence[0][0] == 'b');
     assert(sentence[0][1] == 'a');
@@ -39,8 +43,4 @@ void test_apply_function_to_all_sub_pointers(void) {
     free(sentence);
     free(word);
     puts("test_apply_function_to_all_sub_pointers: passed");
-}
-
-int main() {
-	test_apply_function_to_all_sub_pointers();
 }

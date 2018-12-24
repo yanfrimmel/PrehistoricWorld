@@ -3,7 +3,7 @@
 
 #define WINDOW_WIDTH (1366)
 #define WINDOW_HEIGHT (768)
-#define SDL_WINDOW_FULLSCREEN (0x00000001)
+#define SDL_WINDOW_FULLSCREEN (0x00000001) //1 = yes
 
 int main( int argc, char** argv ) {
 	initialize_sdl();
