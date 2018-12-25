@@ -7,6 +7,9 @@
 
 int main( int argc, char** argv ) {
 	initialize_sdl();
-    showWindow(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN);
+    SDL_Window* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN);
+    SDL_Renderer* renderer = createRenderer(window);
+    printf("Pre gameLoop\n");
+    gameLoop(window,renderer,WINDOW_WIDTH,WINDOW_HEIGHT);
     return 0;
 }

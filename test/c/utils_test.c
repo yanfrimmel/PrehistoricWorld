@@ -9,38 +9,33 @@
  * static makes the function to be defined once,
  * and not in every file that uses the same function
  */
-static void change_char_in_word_function(char* word){
-   word[0] = 'b';
-   word[1] = 'a';
-   word[2] = 'a';
+static void change_array_element_function(int* num){
+    printf("*num = %d\n", *num);
+    (*num)++;
 }
 
 static void test_apply_function_to_all_sub_pointers(void) {
     puts("test_apply_function_to_all_sub_pointers: ");
-    char *word;
-    char **sentence;
+    int **doublePointer = malloc (3* sizeof(int*));
+    int x = 1;
+    int y = 2;
+    int z = 3;
+    int *one = &x;
+    int *two = &y;
+    int *three = &z;
+    printf("doublePointer[0]: %d\n", &one);
+    doublePointer[0] = one;
+    doublePointer[1] = two; 
+    doublePointer[2] = three; 
 
-    //fill data structure
-    word = malloc(4 * sizeof *word); // assume it worked
-    strcpy(word, "foo");
-
-    sentence = malloc(4 * sizeof *sentence); // assume it worked
-    sentence[0] = word;
-    sentence[1] = word;
-    sentence[2] = word;
-    sentence[3] = NULL;
-
-    assert(sentence[0][0] == 'f');
-    assert(sentence[0][1] == 'o');
-    assert(sentence[0][2] == 'o');
-
-    apply_function_to_all_sub_pointers((char*)sentence, change_char_in_word_function);
-
-    assert(sentence[0][0] == 'b');
-    assert(sentence[0][1] == 'a');
-    assert(sentence[0][2] == 'a');
-
-    free(sentence);
-    free(word);
+    // assert(array[0] == 1);
+    // assert(array[1] == 2);
+    apply_function_to_all_sub_pointers(doublePointer, 3, change_array_element_function);
+    printf("doublePointer[0]: %d\n", *doublePointer[0]);
+    assert(*doublePointer[0] == 2);
+    assert(*doublePointer[1] == 3);
+    assert(*doublePointer[2] == 4);
+    
+    free(doublePointer);
     puts("test_apply_function_to_all_sub_pointers: passed");
 }

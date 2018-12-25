@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <math.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
 
 #include "graphical_api.h"
 #include "utils.h"
@@ -22,7 +19,7 @@ int initialize_sdl(void) {
     return 0;
 }
 
-int showWindow(int window_width, int window_height, int flags) {
+SDL_Window* createWindow(int window_width, int window_height, int flags) {
 
     SDL_Window* window = SDL_CreateWindow(GAME_NAME,
                                        SDL_WINDOWPOS_CENTERED,
@@ -32,9 +29,12 @@ int showWindow(int window_width, int window_height, int flags) {
     if (!window) {
         printf("error creating window: %s\n", SDL_GetError());
         SDL_Quit();
-	    return 1;
+	    return NULL;
     }
+    return window;
+}
 
+SDL_Renderer* createRenderer(SDL_Window* window) { 
     // create a renderer, which sets up the graphics hardware
     Uint32 render_flags = SDL_RENDERER_ACCELERATED |
                           SDL_RENDERER_PRESENTVSYNC |
@@ -45,9 +45,13 @@ int showWindow(int window_width, int window_height, int flags) {
       printf("error creating renderer: %s\n", SDL_GetError());
       SDL_DestroyWindow(window);
       SDL_Quit();
-      return 1;
+      return NULL;
     }
 
+    return renderer;
+}
+
+void gameLoop(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height) {
     // load the image into memory using SDL_image library function
     SDL_Surface* surface = IMG_Load(HELLO_IMAGE_STRING);
     if (!surface) {
@@ -55,7 +59,7 @@ int showWindow(int window_width, int window_height, int flags) {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
-        return 1;
+        return;
     }
 
     // load the image data into the graphics hardware's memory
@@ -66,7 +70,7 @@ int showWindow(int window_width, int window_height, int flags) {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
-        return 1;
+        return;
     }
 
     // struct to hold the position and size of the sprite
@@ -93,6 +97,7 @@ int showWindow(int window_width, int window_height, int flags) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 close_requested = 1;
+                printf("close_requested! quiting\n");
             }
         }
 
@@ -109,6 +114,7 @@ int showWindow(int window_width, int window_height, int flags) {
         
         // prevent jitter
         if (distance < 5) {
+            printf("game loop break\n");
             break;
             x_vel = y_vel = 0;
         }
@@ -148,18 +154,15 @@ int showWindow(int window_width, int window_height, int flags) {
         SDL_Delay(1000/60);
     }
     quit_sdl(texture, renderer, window);
-    // SDL_DestroyTexture(texture);
-    // SDL_DestroyRenderer(renderer);
-    // SDL_DestroyWindow(window);
-    // SDL_Quit();
-    return 0;
+    return;
 }
 
 // void quit_sdl(SDL_Texture** textures, SDL_Renderer** renderers, SDL_Window* window) {
 void quit_sdl(void** textures, void** renderers, void** window) {
+    printf("quit_sdl called: quiting\n");
     // clean up resources before exiting
-    apply_function_to_all_sub_pointers((SDL_Texture**)textures, SDL_DestroyTexture);
-    apply_function_to_all_sub_pointers((SDL_Renderer**)renderers, SDL_DestroyRenderer);
+    apply_function_to_all_sub_pointers(textures, 1, SDL_DestroyTexture);
+    apply_function_to_all_sub_pointers(renderers, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);
     SDL_Quit();
 }
