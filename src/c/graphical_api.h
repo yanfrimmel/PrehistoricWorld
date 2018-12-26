@@ -5,6 +5,12 @@
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
 
+#define GAME_NAME ("Prehistoric World")
+#
+// speed in pixels/second
+#define SPEED (300)
+#define HELLO_IMAGE_STRING ("../resources/hello.png")
+
 int initialize_sdl(void);
 SDL_Window* createWindow(int window_width, int widow_height, int flags);  /* An example function declaration */
 SDL_Renderer* createRenderer(SDL_Window* window);

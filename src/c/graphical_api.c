@@ -4,11 +4,7 @@
 #include "graphical_api.h"
 #include "utils.h"
 
-#define GAME_NAME ("Prehistoric World")
 
-// speed in pixels/second
-#define SPEED (300)
-#define HELLO_IMAGE_STRING ("../resources/hello.png")
 int initialize_sdl(void) {
     // attempt to initialize graphics and timer system
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0)
