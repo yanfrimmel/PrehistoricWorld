@@ -5,6 +5,8 @@
 #include "utils.h"
 
 
+
+
 int initialize_sdl(void) {
     // attempt to initialize graphics and timer system
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0)
@@ -15,7 +17,7 @@ int initialize_sdl(void) {
     return 0;
 }
 
-SDL_Window* createWindow(int window_width, int window_height, int flags) {
+SDL_Window* create_window(int window_width, int window_height, int flags) {
 
     SDL_Window* window = SDL_CreateWindow(GAME_NAME,
                                        SDL_WINDOWPOS_CENTERED,
@@ -30,7 +32,7 @@ SDL_Window* createWindow(int window_width, int window_height, int flags) {
     return window;
 }
 
-SDL_Renderer* createRenderer(SDL_Window* window) { 
+SDL_Renderer* create_renderer(SDL_Window* window) { 
     // create a renderer, which sets up the graphics hardware
     Uint32 render_flags = SDL_RENDERER_ACCELERATED |
                           SDL_RENDERER_PRESENTVSYNC |
@@ -47,9 +49,8 @@ SDL_Renderer* createRenderer(SDL_Window* window) {
     return renderer;
 }
 
-void gameLoop(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height) {
-    // load the image into memory using SDL_image library function
-    SDL_Surface* surface = IMG_Load(HELLO_IMAGE_STRING);
+struct rect_and_texture load_image_and_get_sprite_rect(SDL_Window* window , SDL_Renderer* renderer, const char *imagePath) {
+     SDL_Surface* surface = IMG_Load(imagePath);
     if (!surface) {
         printf("error creating surface\n");
         SDL_DestroyRenderer(renderer);
@@ -74,6 +75,13 @@ void gameLoop(SDL_Window* window , SDL_Renderer* renderer , int window_width, in
 
     // get and scale the dimensions of texture
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    struct rect_and_texture destAndTexture = {dest,texture};
+    return destAndTexture;
+}
+void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height) {
+    struct rect_and_texture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HELLO_IMAGE_STRING);
+    SDL_Rect dest = destAndTexture.rect;
+    SDL_Texture* texture = destAndTexture.texture;
     dest.w /= 4;
     dest.h /= 4;
 
