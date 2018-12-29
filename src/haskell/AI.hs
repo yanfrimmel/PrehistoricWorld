@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
  
-module Safe where
+module AI where
  
 import Foreign.C.Types
  

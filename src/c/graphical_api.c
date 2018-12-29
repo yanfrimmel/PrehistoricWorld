@@ -1,11 +1,5 @@
-#include <stdio.h>
-#include <math.h>
-
 #include "graphical_api.h"
 #include "utils.h"
-
-
-
 
 int initialize_sdl(void) {
     // attempt to initialize graphics and timer system
@@ -78,12 +72,14 @@ struct rect_and_texture load_image_and_get_sprite_rect(SDL_Window* window , SDL_
     struct rect_and_texture destAndTexture = {dest,texture};
     return destAndTexture;
 }
-void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height) {
-    struct rect_and_texture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HELLO_IMAGE_STRING);
+
+void game_loop(SDL_Window* window , SDL_Renderer* renderer,
+ int window_width, int window_height) {
+    struct rect_and_texture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HUMAN_MALE_IMAGE_PATH);
     SDL_Rect dest = destAndTexture.rect;
     SDL_Texture* texture = destAndTexture.texture;
-    dest.w /= 4;
-    dest.h /= 4;
+    // dest.w /= 4;
+    // dest.h /= 4;
 
     // start sprite in center of screen
     float x_pos = (window_width - dest.w) / 2;
@@ -94,6 +90,12 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, i
     // set to 1 when window close button is pressed
     int close_requested = 0;
     
+    float distance = 0;
+    float delta_x = 0;
+    float delta_y = 0;
+    int target_x = 0;
+    int target_y = 0;
+
     // animation loop
     while (!close_requested) {
         // process events
@@ -109,44 +111,47 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, i
         int mouse_x, mouse_y;
         int buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
 
-        // determine velocity toward mouse
-        int target_x = mouse_x - dest.w / 2;
-        int target_y = mouse_y - dest.h / 2;
-        float delta_x = target_x - x_pos;
-        float delta_y = target_y - y_pos;
-        float distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+        // // determine velocity toward mouse
+        // int target_x = mouse_x - dest.w / 2;
+        // int target_y = mouse_y - dest.h / 2;
+        // float delta_x = target_x - x_pos;
+        // float delta_y = target_y - y_pos;
+        // float distance = sqrt(delta_x * delta_x + delta_y * delta_y);
         
-        // prevent jitter
-        if (distance < 5) {
-            printf("game loop break\n");
-            break;
-            x_vel = y_vel = 0;
-        }
-        else {
-            x_vel = delta_x * SPEED / distance;
-            y_vel = delta_y * SPEED / distance;
-        }
-
-        // reverse velocity if mouse button 1 pressed
+        
+    
         if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-            x_vel = -x_vel;
-            y_vel = -y_vel;
+            distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+            target_x = mouse_x - dest.w / 2;
+            target_y = mouse_y - dest.h / 2;
+             if (distance > 5) {
+                x_vel = delta_x * SPEED / distance;
+                y_vel = delta_y * SPEED / distance;
+            }
+            
         }
         
         // update positions
         x_pos += x_vel / 60;
         y_pos += y_vel / 60;
-
+        delta_x = target_x - x_pos;
+        delta_y = target_y - y_pos;
+        distance = sqrt(delta_x * delta_x + delta_y * delta_y);
         // collision detection with bounds
         if (x_pos <= 0) x_pos = 0;
         if (y_pos <= 0) y_pos = 0;
         if (x_pos >= window_width - dest.w) x_pos = window_width - dest.w;
         if (y_pos >= window_height - dest.h) y_pos = window_height - dest.h;
 
+        
+        if (distance < 5) {
+                printf("game loop break\n");
+                // break;
+                x_vel = y_vel = 0;
+        }
         // set the positions in the struct
         dest.y = (int) y_pos;
         dest.x = (int) x_pos;
-        
         // clear the window
         SDL_RenderClear(renderer);
 
@@ -154,8 +159,8 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, i
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_RenderPresent(renderer);
 
-        // wait 1/60th of a second
-        SDL_Delay(1000/60);
+        //set FPS
+        SDL_Delay(1000/FPS);
     }
     quit_sdl(texture, renderer, window);
     return;

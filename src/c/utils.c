@@ -1,5 +1,4 @@
 #include "utils.h"
-#include <assert.h>
 
 void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(void*) ){
     if(!pointers) {

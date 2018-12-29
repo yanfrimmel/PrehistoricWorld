@@ -1,15 +1,22 @@
 #ifndef GRAPHICAL_API_H   /* Include guard */
 #define GRAPHICAL_API_H
 
+#include <stdio.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
 
 #define GAME_NAME ("Prehistoric World")
-#
 // speed in pixels/second
-#define SPEED (300)
-#define HELLO_IMAGE_STRING ("../resources/hello.png")
+#define SPEED (150)
+#define FPS (60)
+#define HELLO_IMAGE_PATH ("../resources/hello.png")
+#define HUMAN_MALE_IMAGE_PATH ("../resources/human_male.png")
+#define HUMAN_FEMALE_IMAGE_PATH ("../resources/human_female.png")
+#define SOIL_IMAGE_PATH ("../resources/soil.png")
+#define STONES_IMAGE_PATH ("../resources/stones.png")
+#define GRASS_IMAGE_PATH ("../resources/grass.png")
 
 struct rect_and_texture {
     SDL_Rect rect;
