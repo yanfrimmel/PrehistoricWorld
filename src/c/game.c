@@ -1,4 +1,4 @@
-#include "graphical_api.h"
+#include "game.h"
 #include "utils.h"
 
 int initialize_sdl(void) {
@@ -43,7 +43,7 @@ SDL_Renderer* create_renderer(SDL_Window* window) {
     return renderer;
 }
 
-struct rect_and_texture load_image_and_get_sprite_rect(SDL_Window* window , SDL_Renderer* renderer, const char *imagePath) {
+RecAndTexture load_image_and_get_sprite_rect(SDL_Window* window , SDL_Renderer* renderer, const char *imagePath) {
      SDL_Surface* surface = IMG_Load(imagePath);
     if (!surface) {
         printf("error creating surface\n");
@@ -69,13 +69,31 @@ struct rect_and_texture load_image_and_get_sprite_rect(SDL_Window* window , SDL_
 
     // get and scale the dimensions of texture
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
-    struct rect_and_texture destAndTexture = {dest,texture};
+    RecAndTexture destAndTexture = {dest,texture};
     return destAndTexture;
+}
+
+
+void load_grid(SDL_Window* window, SDL_Renderer* renderer) {
+    for (int x=0; x<GRID_WIDTH; ++x) {
+        for (int y=0; y<GRID_HEIGHT; ++y) {
+            // grid[x][y] = &0;
+            // assert(grid[x][y]); // to spot if loading fails
+            RecAndTexture destAndTexture = load_image_and_get_sprite_rect(window, renderer, SOIL_IMAGE_PATH);
+            SDL_Rect dest = destAndTexture.rect;
+            SDL_Texture* texture = destAndTexture.texture;
+            dest.x = x*32;
+            dest.y = y*32;
+            SDL_RenderCopy(renderer, texture, NULL, &dest);
+   
+        }
+    }
 }
 
 void game_loop(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
-    struct rect_and_texture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HUMAN_MALE_IMAGE_PATH);
+    // load_grid(window, renderer);
+    RecAndTexture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HUMAN_MALE_IMAGE_PATH);
     SDL_Rect dest = destAndTexture.rect;
     SDL_Texture* texture = destAndTexture.texture;
     // dest.w /= 4;
@@ -154,11 +172,10 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
         dest.x = (int) x_pos;
         // clear the window
         SDL_RenderClear(renderer);
-
+        load_grid(window, renderer);
         // draw the image to the window
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_RenderPresent(renderer);
-
         //set FPS
         SDL_Delay(1000/FPS);
     }

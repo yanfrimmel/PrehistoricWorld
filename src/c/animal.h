@@ -25,7 +25,7 @@ enum THIRST {
     full = 2
 };
 
-enum TYPE {
+enum ANIMAL_TYPE {
     rabbit = 0,
     wolf = 1,
     human = 2,
@@ -36,8 +36,8 @@ enum TYPE {
     mammoth = 7
 };
 
-struct animal {
-    TYPE type;
+struct Animal {
+    ANIMAL_TYPE type;
     const char* name;
     const char* image_path; 
     int speed;
@@ -48,5 +48,6 @@ struct animal {
     HUNGER hunger;
     THIRST thirst;
 };
+typedef struct Animal Animal;
 
 #endif
