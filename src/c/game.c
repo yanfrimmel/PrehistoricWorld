@@ -1,5 +1,6 @@
 #include "game.h"
 #include "utils.h"
+#include "grid.h"
 
 int initialize_sdl(void) {
     // attempt to initialize graphics and timer system
@@ -43,35 +44,7 @@ SDL_Renderer* create_renderer(SDL_Window* window) {
     return renderer;
 }
 
-RecAndTexture load_image_and_get_sprite_rect(SDL_Window* window , SDL_Renderer* renderer, const char *imagePath) {
-     SDL_Surface* surface = IMG_Load(imagePath);
-    if (!surface) {
-        printf("error creating surface\n");
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return;
-    }
 
-    // load the image data into the graphics hardware's memory
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-    if (!texture) {
-        printf("error creating texture: %s\n", SDL_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return;
-    }
-
-    // struct to hold the position and size of the sprite
-    SDL_Rect dest;
-
-    // get and scale the dimensions of texture
-    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
-    RecAndTexture destAndTexture = {dest,texture};
-    return destAndTexture;
-}
 
 
 void load_grid(SDL_Window* window, SDL_Renderer* renderer) {
@@ -79,7 +52,7 @@ void load_grid(SDL_Window* window, SDL_Renderer* renderer) {
         for (int y=0; y<GRID_HEIGHT; ++y) {
             // grid[x][y] = &0;
             // assert(grid[x][y]); // to spot if loading fails
-            RecAndTexture destAndTexture = load_image_and_get_sprite_rect(window, renderer, SOIL_IMAGE_PATH);
+            RecAndTexture destAndTexture = load_image_and_get_sprite_rect(renderer, SOIL_IMAGE_PATH);
             SDL_Rect dest = destAndTexture.rect;
             SDL_Texture* texture = destAndTexture.texture;
             dest.x = x*32;
@@ -93,7 +66,7 @@ void load_grid(SDL_Window* window, SDL_Renderer* renderer) {
 void game_loop(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
     // load_grid(window, renderer);
-    RecAndTexture destAndTexture = load_image_and_get_sprite_rect(window,renderer,HUMAN_MALE_IMAGE_PATH);
+    RecAndTexture destAndTexture = load_image_and_get_sprite_rect(renderer,HUMAN_MALE_IMAGE_PATH);
     SDL_Rect dest = destAndTexture.rect;
     SDL_Texture* texture = destAndTexture.texture;
     // dest.w /= 4;
@@ -113,6 +86,9 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
     float delta_y = 0;
     int target_x = 0;
     int target_y = 0;
+    Grid grid = {0};
+
+    // grid_init()
 
     // animation loop
     while (!close_requested) {

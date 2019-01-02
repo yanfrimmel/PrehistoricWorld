@@ -14,3 +14,44 @@ void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(voi
         }
     } 
 }
+
+RecAndTexture load_image_and_get_sprite_rect(SDL_Renderer* renderer, const char *imagePath) {
+     SDL_Surface* surface = IMG_Load(imagePath);
+    if (!surface) {
+        printf("error creating surface\n");
+        SDL_DestroyRenderer(renderer);
+        SDL_Quit();
+        return;
+    }
+
+    // load the image data into the graphics hardware's memory
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    if (!texture) {
+        printf("error creating texture: %s\n", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_Quit();
+        return;
+    }
+
+    // struct to hold the position and size of the sprite
+    SDL_Rect dest;
+
+    // get and scale the dimensions of texture
+    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    RecAndTexture destAndTexture = {dest,texture};
+    return destAndTexture;
+}
+
+const char* get_image_path_string_by_tile_type(int tile_type) {
+    switch (tile_type) {
+        case 0:
+            return SOIL_IMAGE_PATH;
+        break;
+        case 1:
+        break;
+        case 2:
+        break;
+        return NULL;
+    }
+}
