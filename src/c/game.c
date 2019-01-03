@@ -44,28 +44,9 @@ SDL_Renderer* create_renderer(SDL_Window* window) {
     return renderer;
 }
 
-
-
-
-void load_grid(SDL_Window* window, SDL_Renderer* renderer) {
-    for (int x=0; x<GRID_WIDTH; ++x) {
-        for (int y=0; y<GRID_HEIGHT; ++y) {
-            // grid[x][y] = &0;
-            // assert(grid[x][y]); // to spot if loading fails
-            RecAndTexture destAndTexture = load_image_and_get_sprite_rect(renderer, SOIL_IMAGE_PATH);
-            SDL_Rect dest = destAndTexture.rect;
-            SDL_Texture* texture = destAndTexture.texture;
-            dest.x = x*32;
-            dest.y = y*32;
-            SDL_RenderCopy(renderer, texture, NULL, &dest);
-   
-        }
-    }
-}
-
 void game_loop(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
-    // load_grid(window, renderer);
+    // player texture:
     RecAndTexture destAndTexture = load_image_and_get_sprite_rect(renderer,HUMAN_MALE_IMAGE_PATH);
     SDL_Rect dest = destAndTexture.rect;
     SDL_Texture* texture = destAndTexture.texture;
@@ -86,11 +67,35 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
     float delta_y = 0;
     int target_x = 0;
     int target_y = 0;
+
+
+    // Init grid
     Grid grid = {0};
 
-    // grid_init()
+    // Set grid dimensions
+    int margin = 50;
+    grid.rect.w = window_width;
+    grid.rect.h = window_height;
 
+
+
+    // Set number of cells
+    grid.xTiles = 40;
+    grid.yTiles = 40;
+
+
+    // Adjust size and center
+    // grid_adjustSize(&grid);
+    grid_alignCenter(&grid, window_width, window_height);
+
+    if(!grid_init(renderer, &grid))
+    {
+        fprintf(stderr, "Grid fail to initialize !\n");
+        return false;
+    }
+    printf("Pre gameLoop while\n");
     // animation loop
+     grid_render(&grid, renderer);
     while (!close_requested) {
         // process events
         SDL_Event event;
@@ -148,11 +153,11 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
         dest.x = (int) x_pos;
         // clear the window
         SDL_RenderClear(renderer);
-        load_grid(window, renderer);
+        printf("Pre gameLoop grid_render\n");
         // draw the image to the window
+        // grid_render(&grid, renderer);
         SDL_RenderCopy(renderer, texture, NULL, &dest);
         SDL_RenderPresent(renderer);
-        //set FPS
         SDL_Delay(1000/FPS);
     }
     quit_sdl(texture, renderer, window);

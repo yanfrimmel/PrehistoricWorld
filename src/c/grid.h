@@ -2,8 +2,9 @@
 #define GRID_H
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#define GRID_MAX_X_CELLS (20)
-#define GRID_MAX_Y_CELLS (20)
+#include "utils.h"
+#define GRID_MAX_X_CELLS (40)
+#define GRID_MAX_Y_CELLS (40)
 
 //thats the way to define enum in c, hideous.
 typedef enum TILE_TYPE {
@@ -13,7 +14,7 @@ typedef enum TILE_TYPE {
 } TILE_TYPE;
 
 struct Tile {
-    SDL_Rect rect;
+    RecAndTexture rect_and_texture;
     TILE_TYPE tile_type;
 };
 typedef struct Tile Tile;
@@ -36,9 +37,9 @@ int grid_adjustSize(Grid *grid);
 void grid_alignCenter(Grid *grid, int screenWidth, int screenHeight);
 
 bool grid_init(SDL_Renderer* renderer, Grid *grid);
-void grid_initTile(SDL_Renderer* renderer, Grid *grid, Tile *tile, int i, int j, TILE_TYPE type);
+void grid_init_tile(SDL_Renderer* renderer, Grid *grid, Tile *tile, int i, int j, TILE_TYPE type);
 
 void grid_render(Grid *grid, SDL_Renderer *renderer);
-void grid_renderTile(Tile *tile, SDL_Renderer *renderer);
+void grid_render_tile(Tile *tile, SDL_Renderer *renderer);
 
 #endif
