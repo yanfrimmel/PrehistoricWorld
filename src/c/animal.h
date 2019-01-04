@@ -1,6 +1,7 @@
 #ifndef ANIMAL_H   /* Include guard */
 #define ANIMAL_H
 #include <stdbool.h>
+#include "utils.h"
 
 typedef enum DIET {
     herbivore = 0,
@@ -22,7 +23,7 @@ typedef enum HUNGER {
 typedef enum THIRST {
     dehydrated = 0,
     thirsty = 1,
-    full = 2
+    saturation = 2
 } THIRST;
 
 typedef enum ANIMAL_TYPE {
@@ -36,7 +37,12 @@ typedef enum ANIMAL_TYPE {
     mammoth = 7
 } ANIMAL_TYPE;
 
+// typedef enum 
+
 struct Animal {
+    RectAndTexture rect_and_texture;
+    DistanceFromTarget to_target;
+    Movement movement;
     ANIMAL_TYPE type;
     const char* name;
     const char* image_path; 

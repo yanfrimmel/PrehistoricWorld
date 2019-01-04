@@ -1,6 +1,7 @@
 #include "game.h"
 #include "utils.h"
 #include "grid.h"
+#include "animal.h"
 
 int initialize_sdl(void) {
     // attempt to initialize graphics and timer system
@@ -9,7 +10,7 @@ int initialize_sdl(void) {
         printf("error initializing SDL: %s\n", SDL_GetError());
         return 1;
     }
-    return 0;
+    return 0; 
 }
 
 SDL_Window* create_window(int window_width, int window_height, int flags) {
@@ -46,46 +47,35 @@ SDL_Renderer* create_renderer(SDL_Window* window) {
 
 void game_loop(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
-    // player texture:
-    RecAndTexture destAndTexture = load_image_and_get_sprite_rect(renderer,HUMAN_MALE_IMAGE_PATH);
-    SDL_Rect dest = destAndTexture.rect;
-    SDL_Texture* texture = destAndTexture.texture;
-    // dest.w /= 4;
-    // dest.h /= 4;
 
-    // start sprite in center of screen
-    float x_pos = (window_width - dest.w) / 2;
-    float y_pos = (window_height - dest.h) / 2;
-    float x_vel = 0;
-    float y_vel = 0;
-
-    // set to 1 when window close button is pressed
     int close_requested = 0;
-    
-    float distance = 0;
-    float delta_x = 0;
-    float delta_y = 0;
-    int target_x = 0;
-    int target_y = 0;
 
+
+    Animal human_player = {0};
+    human_player.image_path = HUMAN_MALE_IMAGE_PATH;
+    human_player.rect_and_texture = load_image_and_get_sprite_rect(renderer, human_player.image_path);
+
+    human_player.movement.x_pos = (window_width - human_player.rect_and_texture.rect.w) / 2;
+    human_player.movement.y_pos = (window_height - human_player.rect_and_texture.rect.h) / 2;
+    human_player.movement.x_pos =  (window_width - human_player.rect_and_texture.rect.w) / 2;
+    human_player.movement.y_pos =  (window_width - human_player.rect_and_texture.rect.h) / 2;
+    human_player.movement.x_vel = 0;
+    human_player.movement.y_vel = 0;
+    
+    human_player.to_target.distance = 0;
+    human_player.to_target.delta_x = 0;
+    human_player.to_target.delta_y = 0;
+    human_player.to_target.target_x = 0;
+    human_player.to_target.target_y = 0;
 
     // Init grid
     Grid grid = {0};
 
     // Set grid dimensions
-    int margin = 50;
     grid.rect.w = window_width;
     grid.rect.h = window_height;
 
-
-
-    // Set number of cells
-    grid.xTiles = 40;
-    grid.yTiles = 40;
-
-
     // Adjust size and center
-    // grid_adjustSize(&grid);
     grid_alignCenter(&grid, window_width, window_height);
 
     if(!grid_init(renderer, &grid))
@@ -95,7 +85,7 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
     }
     printf("Pre gameLoop while\n");
     // animation loop
-     grid_render(&grid, renderer);
+    grid_render(&grid, renderer);
     while (!close_requested) {
         // process events
         SDL_Event event;
@@ -109,66 +99,80 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
         // get cursor position relative to window
         int mouse_x, mouse_y;
         int buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
-
-        // // determine velocity toward mouse
-        // int target_x = mouse_x - dest.w / 2;
-        // int target_y = mouse_y - dest.h / 2;
-        // float delta_x = target_x - x_pos;
-        // float delta_y = target_y - y_pos;
-        // float distance = sqrt(delta_x * delta_x + delta_y * delta_y);
-        
-        
     
         if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-            distance = sqrt(delta_x * delta_x + delta_y * delta_y);
-            target_x = mouse_x - dest.w / 2;
-            target_y = mouse_y - dest.h / 2;
-             if (distance > 5) {
-                x_vel = delta_x * SPEED / distance;
-                y_vel = delta_y * SPEED / distance;
+            human_player.to_target.distance = 
+            sqrt(human_player.to_target.delta_x * human_player.to_target.delta_x + 
+            human_player.to_target.delta_y * human_player.to_target.delta_y);
+
+            human_player.to_target.target_x = mouse_x - human_player.rect_and_texture.rect.w / 2;
+            human_player.to_target.target_y = mouse_y - human_player.rect_and_texture.rect.h / 2;
+             if (human_player.to_target.distance > 5) {
+                human_player.movement.x_vel = human_player.to_target.delta_x * SPEED / human_player.to_target.distance;
+                human_player.movement.y_vel = human_player.to_target.delta_y * SPEED / human_player.to_target.distance;
             }
             
         }
         
         // update positions
-        x_pos += x_vel / 60;
-        y_pos += y_vel / 60;
-        delta_x = target_x - x_pos;
-        delta_y = target_y - y_pos;
-        distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+        human_player.movement.x_pos += human_player.movement.x_vel / FPS;
+        human_player.movement.y_pos += human_player.movement.y_vel / FPS;
+        human_player.to_target.delta_x = human_player.to_target.target_x - human_player.movement.x_pos;
+        human_player.to_target.delta_y = human_player.to_target.target_y - human_player.movement.y_pos;
+        human_player.to_target.distance = sqrt(human_player.to_target.delta_x * human_player.to_target.delta_x + human_player.to_target.delta_y * human_player.to_target.delta_y);
         // collision detection with bounds
-        if (x_pos <= 0) x_pos = 0;
-        if (y_pos <= 0) y_pos = 0;
-        if (x_pos >= window_width - dest.w) x_pos = window_width - dest.w;
-        if (y_pos >= window_height - dest.h) y_pos = window_height - dest.h;
+        if (human_player.movement.x_pos <= 0) human_player.movement.x_pos = 0;
+        if (human_player.movement.y_pos <= 0) human_player.movement.y_pos = 0;
+        if (human_player.movement.x_pos >= window_width - human_player.rect_and_texture.rect.w) human_player.movement.x_pos = window_width - human_player.rect_and_texture.rect.w;
+        if (human_player.movement.y_pos >= window_height - human_player.rect_and_texture.rect.h) human_player.movement.y_pos = window_height - human_player.rect_and_texture.rect.h;
 
         
-        if (distance < 5) {
+        if (human_player.to_target.distance < 5) {
                 printf("game loop break\n");
-                // break;
-                x_vel = y_vel = 0;
+                human_player.movement.x_vel = human_player.movement.y_vel = 0;
         }
         // set the positions in the struct
-        dest.y = (int) y_pos;
-        dest.x = (int) x_pos;
-        // clear the window
-        SDL_RenderClear(renderer);
+        human_player.rect_and_texture.rect.y = (int) human_player.movement.y_pos;
+        human_player.rect_and_texture.rect.x = (int) human_player.movement.x_pos;
+
         printf("Pre gameLoop grid_render\n");
-        // draw the image to the window
-        // grid_render(&grid, renderer);
-        SDL_RenderCopy(renderer, texture, NULL, &dest);
+        render_adjacent_tiles(grid,renderer, human_player.rect_and_texture.rect);
+       
+        SDL_RenderCopy(renderer, human_player.rect_and_texture.texture, NULL, &human_player.rect_and_texture.rect);
         SDL_RenderPresent(renderer);
+        
         SDL_Delay(1000/FPS);
     }
-    quit_sdl(texture, renderer, window);
+    apply_function_to_all_sub_pointers(human_player.rect_and_texture.texture, 1, SDL_DestroyTexture);
+    destroy_grid_textures(grid);
+    quit_sdl(renderer, window);
     return;
 }
 
+void render_adjacent_tiles(Grid grid, SDL_Renderer* renderer, SDL_Rect dest) {
+    int x = dest.x/IMAGE_PIXELS;
+    int y = dest.y/IMAGE_PIXELS;
+    //check over
+    int right = x+1 < grid.xTiles ? x+1 : x;
+    int left  = x-1 >= 0 ? x-1 : 0;
+    int down = y+1 < grid.yTiles ? y+1 : y;
+    int up  = y-1 >= 0 ? y-1 : 0;
+
+    grid_render_tile(&grid.tiles[x][y], renderer);
+    grid_render_tile(&grid.tiles[right][y], renderer);
+    grid_render_tile(&grid.tiles[left][y], renderer);
+    grid_render_tile(&grid.tiles[x][down], renderer);
+    grid_render_tile(&grid.tiles[x][up], renderer);
+    grid_render_tile(&grid.tiles[right][up], renderer);
+    grid_render_tile(&grid.tiles[right][down], renderer);
+    grid_render_tile(&grid.tiles[left][down], renderer);
+    grid_render_tile(&grid.tiles[left][up], renderer);
+}
+
 // void quit_sdl(SDL_Texture** textures, SDL_Renderer** renderers, SDL_Window* window) {
-void quit_sdl(void** textures, void** renderers, void** window) {
+void quit_sdl(void** renderers, void** window) {
     printf("quit_sdl called: quiting\n");
     // clean up resources before exiting
-    apply_function_to_all_sub_pointers(textures, 1, SDL_DestroyTexture);
     apply_function_to_all_sub_pointers(renderers, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);
     SDL_Quit();
