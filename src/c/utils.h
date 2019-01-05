@@ -13,11 +13,11 @@
 #define STONES_IMAGE_PATH ("../resources/stones.png")
 #define GRASS_IMAGE_PATH ("../resources/grass.png")
 
-struct RectAndTexture {
+struct RectAndSurface {
     SDL_Rect rect;
-    SDL_Texture* texture;
+    SDL_Surface surface;
 };
-typedef struct RectAndTexture RectAndTexture;
+typedef struct RectAndSurface RectAndSurface;
 
 struct DistanceFromTarget {
     float distance;
@@ -37,7 +37,7 @@ struct Movement {
 typedef struct Movement Movement;
 
 void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(void*) );
-RectAndTexture load_image_and_get_sprite_rect(SDL_Renderer* renderer, const char *imagePath);
+RectAndSurface load_image_and_get_sprite_rect(SDL_Renderer* renderer, const char *imagePath);
 const char* get_image_path_string_by_tile_type(int tile_type);
 
 #endif 

@@ -8,7 +8,8 @@
 #define IMAGE_PIXELS (32)
 #define GRID_WIDTH (WINDOW_WIDTH/IMAGE_PIXELS)
 #define GRID_HEIGHT (WINDOW_HEIGHT/IMAGE_PIXELS)
-
+SDL_Surface* tile_surfaces;
+int number_of_tile_surfaces;
 //thats the way to define enum in c, hideous.
 typedef enum TILE_TYPE {
     soil = 0,
@@ -17,7 +18,7 @@ typedef enum TILE_TYPE {
 } TILE_TYPE;
 
 struct Tile {
-    RectAndTexture rect_and_texture;
+    RectAndSurface rect_and_surface;
     TILE_TYPE tile_type;
 };
 typedef struct Tile Tile;
@@ -40,8 +41,10 @@ int grid_adjustSize(Grid *grid);
 void grid_alignCenter(Grid *grid, int screenWidth, int screenHeight);
 bool grid_init(SDL_Renderer* renderer, Grid *grid);
 void grid_init_tile(SDL_Renderer* renderer, Grid *grid, Tile *tile, int i, int j, TILE_TYPE type);
-void grid_render(Grid *grid, SDL_Renderer *renderer);
-void grid_render_tile(Tile *tile, SDL_Renderer *renderer);
-void destroy_grid_textures(Grid grid);
+void grid_render(SDL_Surface* screen, Grid *grid, SDL_Renderer *renderer);
+void grid_render_tile(SDL_Surface* screen, Tile *tile, SDL_Renderer *renderer);
+void destroy_grid_surfaces(Grid grid);
+RectAndSurface get_rect_and_surface_by_tile_type(int tile_type);
+
 
 #endif
