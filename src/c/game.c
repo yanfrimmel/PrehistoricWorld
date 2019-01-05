@@ -46,41 +46,12 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
     SDL_Surface* screen = SDL_CreateRGBSurface(0,window_width,window_height,32,0,0,0,0);
     int close_requested = 0;
+    printf("Pre init_player \n");
+    Animal human_player = init_player(window_width, window_height);
+    printf("Pre grid_init \n");
+    Grid grid = grid_init(renderer, window_width, window_height);
 
-
-    Animal human_player = {0};
-    human_player.image_path = HUMAN_MALE_IMAGE_PATH;
-    human_player.rect_and_surface = load_image_and_get_sprite_rect(renderer, human_player.image_path);
-
-    human_player.movement.x_pos = (window_width - human_player.rect_and_surface.rect.w) / 2;
-    human_player.movement.y_pos = (window_height - human_player.rect_and_surface.rect.h) / 2;
-    human_player.movement.x_vel = 0;
-    human_player.movement.y_vel = 0;
-    
-    human_player.to_target.distance = 0;
-    human_player.to_target.delta_x = 0;
-    human_player.to_target.delta_y = 0;
-    human_player.to_target.target_x = 0;
-    human_player.to_target.target_y = 0;
-
-    // Init grid
-    Grid grid = {0};
-
-    // Set grid dimensions
-    grid.rect.w = window_width;
-    grid.rect.h = window_height;
-
-    // Adjust size and center
-    grid_alignCenter(&grid, window_width, window_height);
-
-    if(!grid_init(renderer, &grid))
-    {
-        fprintf(stderr, "Grid fail to initialize !\n");
-        return false;
-    }
     printf("Pre gameLoop while\n");
-    // animation loop
-    // grid_render(&grid, renderer);
     while (!close_requested) {
         // process events
         SDL_Event event;
@@ -138,19 +109,21 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
 
         SDL_Texture* screenTexture = SDL_CreateTextureFromSurface(renderer,screen);
         SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
-        
         SDL_RenderPresent(renderer);
         SDL_Delay(1000/FPS);
+        SDL_DestroyTexture(screenTexture);
     }
     apply_function_to_all_sub_pointers(&human_player.rect_and_surface.surface, 1, SDL_DestroyTexture);
     // SDL_DestroyTexture(&human_player.rect_and_surface.surface);
-    quit_sdl(renderer, window, screen, grid);
+    quit_sdl(renderer, window, screen);
     return;
 }
 
-void quit_sdl(void** renderers, void** window, SDL_Surface* screen, Grid grid) {
+void quit_sdl(void** renderers, void** window, SDL_Surface* screen) {
     printf("quit_sdl called: quiting\n");
-    destroy_grid_surfaces(grid);
+    destroy_human_player();
+    destroy_grid_surfaces();
+    destroy_grid();
     SDL_FreeSurface(screen);
     apply_function_to_all_sub_pointers(renderers, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);

@@ -56,4 +56,9 @@ struct Animal {
 };
 typedef struct Animal Animal;
 
+ Animal *human_player;
+
+Animal init_player(int window_width, int window_height);
+void destroy_human_player();
+
 #endif

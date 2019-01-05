@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/out/PrehistoricWorld",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/resources/",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
