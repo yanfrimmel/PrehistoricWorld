@@ -8,11 +8,16 @@
 #define IMAGE_PIXELS (32)
 #define GRID_WIDTH (WINDOW_WIDTH/IMAGE_PIXELS)
 #define GRID_HEIGHT (WINDOW_HEIGHT/IMAGE_PIXELS)
+
+#define SOIL_IMAGE_PATH ("../resources/soil.png")
+#define GRASS_IMAGE_PATH ("../resources/grass.png")
+#define STONES_IMAGE_PATH ("../resources/stones.png")
 //thats the way to define enum in c, hideous.
 typedef enum TILE_TYPE {
     soil = 0,
     grass = 1,
-    water = 2
+    stones = 2,
+    water = 3
 } TILE_TYPE;
 
 struct Tile {
@@ -48,5 +53,6 @@ void grid_render_tile(SDL_Surface* screen, Tile *tile, SDL_Renderer *renderer);
 void destroy_grid_surfaces();
 void destroy_grid();
 RectAndSurface get_rect_and_surface_by_tile_type(int tile_type);
+const char* get_image_path_string_by_tile_type(TILE_TYPE tile_type);
 
 #endif

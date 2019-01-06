@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include "utils.h"
 
+#define HUMAN_MALE_IMAGE_PATH ("../resources/human_male.png")
+#define HUMAN_FEMALE_IMAGE_PATH ("../resources/human_female.png")
+
 typedef enum DIET {
     herbivore = 0,
     omnivore = 1, 
@@ -58,7 +61,15 @@ typedef struct Animal Animal;
 
  Animal *human_player;
 
-Animal init_player(int window_width, int window_height);
+Animal init_animal(int x_pos, int y_pos, ANIMAL_TYPE animal_type, GENDER gender);
 void destroy_human_player();
+void edit_animal_movenet(Movement *movement, float x_pos, float y_pos, float x_vel, float y_vel);
+void edit_animal_distance_from_target(DistanceFromTarget *target,
+    float distance,
+    float delta_x,
+    float delta_y,
+    int target_x,
+    int target_y);
+const char* get_image_path_string_by_animal_type_and_gender(ANIMAL_TYPE animal_type, GENDER gender);
 
 #endif

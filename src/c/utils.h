@@ -6,12 +6,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#define HUMAN_MALE_IMAGE_PATH ("../resources/human_male.png")
-#define HUMAN_FEMALE_IMAGE_PATH ("../resources/human_female.png")
-#define SOIL_IMAGE_PATH ("../resources/soil.png")
-#define STONES_IMAGE_PATH ("../resources/stones.png")
-#define GRASS_IMAGE_PATH ("../resources/grass.png")
-
 struct RectAndSurface {
     SDL_Rect rect;
     SDL_Surface surface;
@@ -37,6 +31,5 @@ typedef struct Movement Movement;
 
 void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(void*) );
 RectAndSurface load_image_and_get_sprite_rect(const char *imagePath);
-const char* get_image_path_string_by_tile_type(int tile_type);
 
 #endif 

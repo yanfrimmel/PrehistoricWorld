@@ -9,7 +9,7 @@ int grid_init_surfaces() {
     if(tile_surfaces == NULL){ printf("Error - can't allocate\n"); return -1; }
     //Images load
     for(int i = 0; i < number_of_tile_surfaces; i++) { 
-        tile_surfaces[i] = *IMG_Load(get_image_path_string_by_tile_type(i)); ; 
+        tile_surfaces[i] = *IMG_Load(get_image_path_string_by_tile_type(grass)); ; 
         if(!&tile_surfaces) {
             printf("Error - can't create surface\n"); return -1; 
         }
@@ -126,4 +126,15 @@ void destroy_grid_surfaces() {
 
 void destroy_grid() {
     free(grid);
+}
+
+const char* get_image_path_string_by_tile_type(TILE_TYPE tile_type) {
+    switch (tile_type) {
+        case soil:
+            return SOIL_IMAGE_PATH;
+        case grass:  
+            return GRASS_IMAGE_PATH;
+        case stones:  
+            return STONES_IMAGE_PATH;
+    }
 }

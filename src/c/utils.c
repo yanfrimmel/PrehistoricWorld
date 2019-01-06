@@ -29,15 +29,4 @@ RectAndSurface load_image_and_get_sprite_rect(const char *imagePath) {
     return rect_and_surface;
 }
 
-const char* get_image_path_string_by_tile_type(int tile_type) {
-    switch (tile_type) {
-        case 0:
-            return SOIL_IMAGE_PATH;
-        break;
-        case 1:
-        break;
-        case 2:
-        break;
-        return NULL;
-    }
-}
+

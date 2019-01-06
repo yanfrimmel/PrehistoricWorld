@@ -47,7 +47,7 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
     SDL_Surface* screen = SDL_CreateRGBSurface(0,window_width,window_height,32,0,0,0,0);
     int close_requested = 0;
     printf("Pre init_player \n");
-    Animal human_player = init_player(window_width, window_height);
+    Animal human_player = init_animal((window_width - 32) / 2, (window_height - 32) / 2, human, male);
     printf("Pre grid_init \n");
     Grid grid = grid_init(renderer, window_width, window_height);
 
