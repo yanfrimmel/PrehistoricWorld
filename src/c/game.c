@@ -42,7 +42,16 @@ SDL_Renderer* create_renderer(SDL_Window* window) {
     return renderer;
 }
 
-void game_loop(SDL_Window* window , SDL_Renderer* renderer,
+void fps_counter_loop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS) {
+    *deltaclock = SDL_GetTicks() - *startclock;
+    if ( *deltaclock != 0 ) {
+        *currentFPS = 1000 / *deltaclock;
+         printf("FPS:%d\n",*currentFPS);
+    }
+
+}
+
+void play(SDL_Window* window , SDL_Renderer* renderer,
  int window_width, int window_height) {
     SDL_Surface* screen = SDL_CreateRGBSurface(0,window_width,window_height,32,0,0,0,0);
     int close_requested = 0;
@@ -52,8 +61,14 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
     Grid grid = grid_init(renderer, window_width, window_height);
 
     printf("Pre gameLoop while\n");
+    //for FPS counter
+    Uint32 startclock = 0;
+    Uint32 deltaclock = 0;
+    Uint32 currentFPS = 0;
+
     while (!close_requested) {
         // process events
+        startclock = SDL_GetTicks();
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -110,8 +125,11 @@ void game_loop(SDL_Window* window , SDL_Renderer* renderer,
         SDL_Texture* screenTexture = SDL_CreateTextureFromSurface(renderer,screen);
         SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
-        SDL_Delay(1000/FPS);
         SDL_DestroyTexture(screenTexture);
+        fps_counter_loop(&startclock, &deltaclock, &currentFPS);
+        if((1000/FPS) > deltaclock) {
+            SDL_Delay((1000/FPS) - deltaclock);
+        }
     }
     apply_function_to_all_sub_pointers(&human_player.rect_and_surface.surface, 1, SDL_DestroyTexture);
     // SDL_DestroyTexture(&human_player.rect_and_surface.surface);

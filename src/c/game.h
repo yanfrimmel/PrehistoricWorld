@@ -21,7 +21,8 @@
 int initialize_sdl(void);
 SDL_Window* create_window(int window_width, int widow_height, int flags);  /* An example function declaration */
 SDL_Renderer* create_renderer(SDL_Window* window);
-void game_loop(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height);
+void play(SDL_Window* window , SDL_Renderer* renderer , int window_width, int window_height);
 void quit_sdl(void** renderers, void** window, SDL_Surface* screen);
+void fps_counter_loop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS);
 
 #endif 
