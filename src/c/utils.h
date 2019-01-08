@@ -14,22 +14,22 @@ typedef struct RectAndSurface RectAndSurface;
 
 struct DistanceFromTarget {
     float distance;
-    float delta_x;
-    float delta_y;
-    int target_x;
-    int target_y;
+    float deltaX;
+    float deltaY;
+    int targetX;
+    int targetY;
 };
 typedef struct DistanceFromTarget DistanceFromTarget;
 
 struct Movement {
-    float x_pos; 
-    float y_pos;
-    float x_vel;
-    float y_vel;
+    float xPos; 
+    float yPos;
+    float xVel;
+    float yVel;
 };
 typedef struct Movement Movement;
 
-void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(void*) );
-RectAndSurface load_image_and_get_sprite_rect(const char *imagePath);
+void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) );
+RectAndSurface loadImageAndGetSpriteRect(const char *imagePath);
 
 #endif 

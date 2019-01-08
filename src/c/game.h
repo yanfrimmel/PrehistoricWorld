@@ -21,11 +21,11 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Surface* screen;
 
-int initialize_sdl(void);
-SDL_Window* create_window(int flags);  /* An example function declaration */
-SDL_Renderer* create_renderer();
+int initializeSdl(void);
+SDL_Window* createWindow(int flags);  /* An example function declaration */
+SDL_Renderer* createRenderer();
 void play();
-void quit_sdl();
-void fps_counter_loop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS);
+void quitSdl();
+void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS);
 
 #endif 

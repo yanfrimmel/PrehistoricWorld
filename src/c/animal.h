@@ -43,14 +43,14 @@ typedef enum ANIMAL_TYPE {
 // typedef enum 
 
 struct Animal {
-    RectAndSurface rect_and_surface;
-    DistanceFromTarget to_target;
+    RectAndSurface rectAndSurface;
+    DistanceFromTarget toTarget;
     Movement movement;
     ANIMAL_TYPE type;
     const char* name;
-    const char* image_path; 
+    const char* imagePath; 
     int speed;
-    int health_points;
+    int healthPoints;
     DIET diet;
     GENDER gender;
     bool social;
@@ -59,17 +59,17 @@ struct Animal {
 };
 typedef struct Animal Animal;
 
- Animal *human_player;
+ Animal *humanPlayer;
 
-Animal init_animal(int x_pos, int y_pos, ANIMAL_TYPE animal_type, GENDER gender);
-void destroy_human_player();
-void edit_animal_movenet(Movement *movement, float x_pos, float y_pos, float x_vel, float y_vel);
-void edit_animal_distance_from_target(DistanceFromTarget *target,
+Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender);
+void destroyHumanPlayer();
+void editAnimalMovenet(Movement *movement, float xPos, float yPos, float xVel, float yVel);
+void editAnimalDistance_fromTarget(DistanceFromTarget *target,
     float distance,
-    float delta_x,
-    float delta_y,
-    int target_x,
-    int target_y);
-const char* get_image_path_string_by_animal_type_and_gender(ANIMAL_TYPE animal_type, GENDER gender);
+    float deltaX,
+    float deltaY,
+    int targetX,
+    int targetY);
+const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GENDER gender);
 
 #endif

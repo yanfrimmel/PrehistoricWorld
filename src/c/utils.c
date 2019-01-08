@@ -1,8 +1,8 @@
 #include "utils.h"
 
-void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(void*) ){
+void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) ){
     if(!pointers) {
-        printf("apply_function_to_all_sub_pointers null pointer\n");
+        printf("apply_functionToAllSubPointers null pointer\n");
         return;
     }
     printf("size = %d\n", size);
@@ -15,7 +15,7 @@ void apply_function_to_all_sub_pointers(void** pointers, int size, void (*f)(voi
     } 
 }
 
-RectAndSurface load_image_and_get_sprite_rect(const char *imagePath) {
+RectAndSurface loadImageAndGetSpriteRect(const char *imagePath) {
 
     SDL_Surface* surface = IMG_Load(imagePath);
     if (!surface) {
@@ -25,8 +25,8 @@ RectAndSurface load_image_and_get_sprite_rect(const char *imagePath) {
     }
     SDL_Rect dest;
     SDL_GetClipRect(surface, &dest);
-    RectAndSurface rect_and_surface = {dest,*surface};
-    return rect_and_surface;
+    RectAndSurface rectAndSurface = {dest,*surface};
+    return rectAndSurface;
 }
 
 

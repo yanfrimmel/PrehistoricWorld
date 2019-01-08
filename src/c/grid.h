@@ -24,8 +24,8 @@ typedef enum TILE_TYPE {
 } TILE_TYPE;
 
 struct Tile {
-    RectAndSurface rect_and_surface;
-    TILE_TYPE tile_type;
+    RectAndSurface rectAndSurface;
+    TILE_TYPE tileType;
 };
 typedef struct Tile Tile;
 
@@ -44,18 +44,18 @@ struct Grid {
 typedef struct Grid Grid;
 
 Grid *grid;
-SDL_Surface* tile_surfaces;
-int number_of_tile_surfaces;
+SDL_Surface* tileSurfaces;
+int numberOfTileSurfaces;
 
-int grid_adjustSize();
-void grid_alignCenter();
-Grid grid_init();
-void grid_init_tile(Tile *tile, int i, int j, TILE_TYPE type);
-void grid_render();
-void grid_render_tile(Tile *tile);
-void destroy_grid_surfaces();
-void destroy_grid();
-RectAndSurface get_rect_and_surface_by_tile_type(int tile_type);
-const char* get_image_path_string_by_tile_type(TILE_TYPE tile_type);
+int gridAdjustSize();
+void gridAlignCenter();
+Grid gridInit();
+void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type);
+void gridRender();
+void gridRenderTile(Tile *tile);
+void destroyGridSurfaces();
+void destroyGrid();
+RectAndSurface getRectAndSurfaceByTileType(int tileType);
+const char* getImagePathStringByTileType(TILE_TYPE tileType);
 
 #endif

@@ -3,32 +3,32 @@
 // #include <unistd.h>  //Header file for sleep(). man 3 sleep for details. 
 // #include <pthread.h> 
 
-int grid_init_surfaces() {
-    number_of_tile_surfaces = 1;
-    tile_surfaces = (SDL_Surface *) malloc ( number_of_tile_surfaces * sizeof(SDL_Surface));
-    if(tile_surfaces == NULL){ printf("Error - can't allocate\n"); return -1; }
+int gridInitSurfaces() {
+    numberOfTileSurfaces = 1;
+    tileSurfaces = (SDL_Surface *) malloc ( numberOfTileSurfaces * sizeof(SDL_Surface));
+    if(tileSurfaces == NULL){ printf("Error - can't allocate\n"); return -1; }
     //Images load
-    for(int i = 0; i < number_of_tile_surfaces; i++) { 
-        tile_surfaces[i] = *IMG_Load(get_image_path_string_by_tile_type(grass)); ; 
-        if(!&tile_surfaces) {
+    for(int i = 0; i < numberOfTileSurfaces; i++) { 
+        tileSurfaces[i] = *IMG_Load(getImagePathStringByTileType(grass)); ; 
+        if(!&tileSurfaces) {
             printf("Error - can't create surface\n"); return -1; 
         }
     }
     return 1;
 }  
 
-RectAndSurface get_rect_and_surface_by_tile_type(int tile_type){
-    SDL_Surface surface = tile_surfaces[tile_type];
+RectAndSurface getRectAndSurfaceByTileType(int tileType){
+    SDL_Surface surface = tileSurfaces[tileType];
     if(!&surface) {
             printf("Error - can't allocate\n"); return; 
     }
     SDL_Rect dest;
     SDL_GetClipRect(&surface, &dest);
-    RectAndSurface rect_and_surface = {dest,surface};
-    return rect_and_surface;
+    RectAndSurface rectAndSurface = {dest,surface};
+    return rectAndSurface;
 }
 
-int grid_adjustSize()
+int gridAdjustSize()
 {
     if(!grid->rect.w || !grid->rect.h || !grid->xTiles || !grid->yTiles)
     {
@@ -44,12 +44,12 @@ int grid_adjustSize()
     return true;
 }
 
-void grid_alignCenter() {
+void gridAlignCenter() {
     grid->rect.x = WINDOW_WIDTH;
     grid->rect.y = WINDOW_HEIGHT;
 }
 
-Grid grid_init() {
+Grid gridInit() {
     grid  = (Grid *) malloc (sizeof(Grid));
     if(grid == NULL){ 
         printf("Error - can't allocate\n"); 
@@ -57,8 +57,8 @@ Grid grid_init() {
     }
     grid->rect.w = WINDOW_WIDTH;
     grid->rect.h = WINDOW_HEIGHT;
-    grid_alignCenter(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
-    if(grid_init_surfaces() == -1) {
+    gridAlignCenter(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if(gridInitSurfaces() == -1) {
         fprintf(stderr, "Error: cant allocate grid surfaces! !\n");
         return;
     };
@@ -81,7 +81,7 @@ Grid grid_init() {
     // Init all tiles
     for(int i = 0; i < grid->xTiles; ++i) {
         for(int j = 0; j < grid->yTiles; ++j) {
-            grid_init_tile(&(grid->tiles[i][j]),i, j, soil);
+            gridInitTile(&(grid->tiles[i][j]),i, j, soil);
         }
     }
     return *grid;
@@ -89,45 +89,45 @@ Grid grid_init() {
 
 
 
-void grid_init_tile(Tile *tile, int i, int j, TILE_TYPE type) {
-    printf("grid_init_tile \n");
-    tile->tile_type = type;
-    RectAndSurface rect_and_surface = get_rect_and_surface_by_tile_type(tile->tile_type); 
-    tile->rect_and_surface = rect_and_surface;
-    tile->rect_and_surface.rect.w = IMAGE_PIXELS;
-    tile->rect_and_surface.rect.h = IMAGE_PIXELS;
-    tile->rect_and_surface.rect.x = tile->rect_and_surface.rect.w * i;
-    tile->rect_and_surface.rect.y = tile->rect_and_surface.rect.h * j;
+void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type) {
+    printf("gridInitTile \n");
+    tile->tileType = type;
+    RectAndSurface rectAndSurface = getRectAndSurfaceByTileType(tile->tileType); 
+    tile->rectAndSurface = rectAndSurface;
+    tile->rectAndSurface.rect.w = IMAGE_PIXELS;
+    tile->rectAndSurface.rect.h = IMAGE_PIXELS;
+    tile->rectAndSurface.rect.x = tile->rectAndSurface.rect.w * i;
+    tile->rectAndSurface.rect.y = tile->rectAndSurface.rect.h * j;
 }
 
-void grid_render() {
+void gridRender() {
     // Render all tiles
-    printf("grid_render%d, %d\n", grid->xTiles, grid->yTiles);
+    printf("gridRender%d, %d\n", grid->xTiles, grid->yTiles);
     for(int i = 0; i < grid->xTiles; ++i) {
         for(int j = 0; j < grid->yTiles; ++j) {
-            grid_render_tile(&(grid->tiles[i][j]));
+            gridRenderTile(&(grid->tiles[i][j]));
         }
     }
 }
 
-void grid_render_tile(Tile *tile) {
-    RectAndSurface* rect_and_surface = &tile->rect_and_surface;
-    SDL_BlitSurface(&rect_and_surface->surface, NULL, screen, &rect_and_surface->rect);
+void gridRenderTile(Tile *tile) {
+    RectAndSurface* rectAndSurface = &tile->rectAndSurface;
+    SDL_BlitSurface(&rectAndSurface->surface, NULL, screen, &rectAndSurface->rect);
 }
 
-void destroy_grid_surfaces() {
-    for(int i = 0; i < number_of_tile_surfaces; i++) { 
-        SDL_FreeSurface(&tile_surfaces[i]);
+void destroyGridSurfaces() {
+    for(int i = 0; i < numberOfTileSurfaces; i++) { 
+        SDL_FreeSurface(&tileSurfaces[i]);
     }
-    free(tile_surfaces);
+    free(tileSurfaces);
 }
 
-void destroy_grid() {
+void destroyGrid() {
     free(grid);
 }
 
-const char* get_image_path_string_by_tile_type(TILE_TYPE tile_type) {
-    switch (tile_type) {
+const char* getImagePathStringByTileType(TILE_TYPE tileType) {
+    switch (tileType) {
         case soil:
             return SOIL_IMAGE_PATH;
         case grass:  

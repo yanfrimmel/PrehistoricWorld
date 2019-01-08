@@ -1,54 +1,54 @@
 #include "animal.h"
 
-Animal init_animal(int x_pos, int y_pos, ANIMAL_TYPE animal_type, GENDER gender) {
-    human_player = (Animal *)malloc(sizeof(Animal));
-    if (human_player == NULL) {
+Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender) {
+    humanPlayer = (Animal *)malloc(sizeof(Animal));
+    if (humanPlayer == NULL) {
         printf("Error - can't allocate\n");
         return;
     }
 
-    human_player->image_path = get_image_path_string_by_animal_type_and_gender(animal_type,gender);
-    human_player->rect_and_surface = load_image_and_get_sprite_rect(human_player->image_path);
+    humanPlayer->imagePath = getImagePathStringByAnimalTypeAndGender(animalType,gender);
+    humanPlayer->rectAndSurface = loadImageAndGetSpriteRect(humanPlayer->imagePath);
 
-    human_player->movement.x_pos = x_pos;
-    human_player->movement.y_pos = y_pos;
-    human_player->movement.x_vel = 0;
-    human_player->movement.y_vel = 0;
+    humanPlayer->movement.xPos = xPos;
+    humanPlayer->movement.yPos = yPos;
+    humanPlayer->movement.xVel = 0;
+    humanPlayer->movement.yVel = 0;
 
-    human_player->to_target.distance = 0;
-    human_player->to_target.delta_x = 0;
-    human_player->to_target.delta_y = 0;
-    human_player->to_target.target_x = 0;
-    human_player->to_target.target_y = 0;
-    return *human_player;
+    humanPlayer->toTarget.distance = 0;
+    humanPlayer->toTarget.deltaX = 0;
+    humanPlayer->toTarget.deltaY = 0;
+    humanPlayer->toTarget.targetX = 0;
+    humanPlayer->toTarget.targetY = 0;
+    return *humanPlayer;
 }
 
-void destroy_human_player() {
-    free(human_player);
+void destroyHumanPlayer() {
+    free(humanPlayer);
 }
 
-void edit_animal_movenet(Movement *movement, float x_pos, float y_pos, float x_vel, float y_vel) {
-    movement->x_pos = x_pos;
-    movement->y_pos = y_pos;
-    movement->x_vel = x_vel;
-    movement->y_vel = y_vel;
+void editAnimalMovenet(Movement *movement, float xPos, float yPos, float xVel, float yVel) {
+    movement->xPos = xPos;
+    movement->yPos = yPos;
+    movement->xVel = xVel;
+    movement->yVel = yVel;
 }
 
-void edit_animal_distance_from_target(DistanceFromTarget *target,
+void editAnimalDistance_fromTarget(DistanceFromTarget *target,
                                       float distance,
-                                      float delta_x,
-                                      float delta_y,
-                                      int target_x,
-                                      int target_y) {
+                                      float deltaX,
+                                      float deltaY,
+                                      int targetX,
+                                      int targetY) {
     target->distance = distance;
-    target->delta_x = delta_x;
-    target->delta_y = delta_y;
-    target->target_x = target_x;
-    target->target_y = target_y;
+    target->deltaX = deltaX;
+    target->deltaY = deltaY;
+    target->targetX = targetX;
+    target->targetY = targetY;
 }
 
-const char* get_image_path_string_by_animal_type_and_gender(ANIMAL_TYPE animal_type, GENDER gender) {
-    switch (animal_type) {
+const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GENDER gender) {
+    switch (animalType) {
         case human:
             switch (gender){
                 case male:
