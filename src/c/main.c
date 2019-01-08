@@ -3,10 +3,10 @@
 
 int main( int argc, char** argv ) {
 	initialize_sdl();
-    SDL_Window* window = create_window(WINDOW_WIDTH, WINDOW_HEIGHT,
-     SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-    SDL_Renderer* renderer = create_renderer(window);
+    window = create_window(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    renderer = create_renderer();
+    screen = SDL_GetWindowSurface(window);
     printf("Pre gameLoop\n"); 
-    play(window,renderer,WINDOW_WIDTH,WINDOW_HEIGHT);
+    play();
     return 0;
 }

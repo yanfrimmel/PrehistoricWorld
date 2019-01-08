@@ -10,12 +10,12 @@ int initialize_sdl(void) {
     return 0; 
 }
 
-SDL_Window* create_window(int window_width, int window_height, int flags) {
+SDL_Window* create_window(int flags) {
 
     SDL_Window* window = SDL_CreateWindow(GAME_NAME,
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
-                                       window_width, window_height,
+                                       WINDOW_WIDTH, WINDOW_HEIGHT, 
                                        flags);
     if (!window) {
         printf("error creating window: %s\n", SDL_GetError());
@@ -25,7 +25,7 @@ SDL_Window* create_window(int window_width, int window_height, int flags) {
     return window;
 }
 
-SDL_Renderer* create_renderer(SDL_Window* window) { 
+SDL_Renderer* create_renderer() { 
     // create a renderer, which sets up the graphics hardware
     Uint32 render_flags = SDL_RENDERER_ACCELERATED |
                           SDL_RENDERER_PRESENTVSYNC |
@@ -51,21 +51,20 @@ void fps_counter_loop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentF
 
 }
 
-void play(SDL_Window* window , SDL_Renderer* renderer,
- int window_width, int window_height) {
-    SDL_Surface* screen = SDL_CreateRGBSurface(0,window_width,window_height,32,0,0,0,0);
+void play() {
     int close_requested = 0;
     printf("Pre init_player \n");
-    Animal human_player = init_animal((window_width - 32) / 2, (window_height - 32) / 2, human, male);
+    Animal human_player = init_animal((WINDOW_WIDTH - 32) / 2, (WINDOW_HEIGHT - 32) / 2, human, male);
     printf("Pre grid_init \n");
-    Grid grid = grid_init(renderer, window_width, window_height);
+    Grid grid = grid_init(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     printf("Pre gameLoop while\n");
     //for FPS counter
     Uint32 startclock = 0;
     Uint32 deltaclock = 0;
     Uint32 currentFPS = 0;
-
+    int mouse_x, mouse_y, buttons;
+    int FPS_divided = 1000/FPS;
     while (!close_requested) {
         // process events
         startclock = SDL_GetTicks();
@@ -78,8 +77,8 @@ void play(SDL_Window* window , SDL_Renderer* renderer,
         }
 
         // get cursor position relative to window
-        int mouse_x, mouse_y;
-        int buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
+       
+        buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
     
         if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
             human_player.to_target.distance = 
@@ -103,8 +102,8 @@ void play(SDL_Window* window , SDL_Renderer* renderer,
         // collision detection with bounds
         if (human_player.movement.x_pos <= 0) human_player.movement.x_pos = 0;
         if (human_player.movement.y_pos <= 0) human_player.movement.y_pos = 0;
-        if (human_player.movement.x_pos >= window_width - human_player.rect_and_surface.rect.w) human_player.movement.x_pos = window_width - human_player.rect_and_surface.rect.w;
-        if (human_player.movement.y_pos >= window_height - human_player.rect_and_surface.rect.h) human_player.movement.y_pos = window_height - human_player.rect_and_surface.rect.h;
+        if (human_player.movement.x_pos >= WINDOW_WIDTH - human_player.rect_and_surface.rect.w) human_player.movement.x_pos = WINDOW_WIDTH - human_player.rect_and_surface.rect.w;
+        if (human_player.movement.y_pos >= WINDOW_HEIGHT - human_player.rect_and_surface.rect.h) human_player.movement.y_pos = WINDOW_HEIGHT - human_player.rect_and_surface.rect.h;
 
  
         if (human_player.to_target.distance < IMAGE_PIXELS/2) {
@@ -127,23 +126,23 @@ void play(SDL_Window* window , SDL_Renderer* renderer,
         SDL_RenderPresent(renderer);
         SDL_DestroyTexture(screenTexture);
         fps_counter_loop(&startclock, &deltaclock, &currentFPS);
-        if((1000/FPS) > deltaclock) {
-            SDL_Delay((1000/FPS) - deltaclock);
+        if((FPS_divided) > deltaclock) {
+            SDL_Delay((FPS_divided) - deltaclock);
         }
     }
     apply_function_to_all_sub_pointers(&human_player.rect_and_surface.surface, 1, SDL_DestroyTexture);
     // SDL_DestroyTexture(&human_player.rect_and_surface.surface);
-    quit_sdl(renderer, window, screen);
+    quit_sdl();
     return;
 }
 
-void quit_sdl(void** renderers, void** window, SDL_Surface* screen) {
+void quit_sdl() {
     printf("quit_sdl called: quiting\n");
     destroy_human_player();
     destroy_grid_surfaces();
     destroy_grid();
     SDL_FreeSurface(screen);
-    apply_function_to_all_sub_pointers(renderers, 1, SDL_DestroyRenderer);
+    apply_function_to_all_sub_pointers(renderer, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);
     SDL_Quit();
 }

@@ -28,7 +28,7 @@ RectAndSurface get_rect_and_surface_by_tile_type(int tile_type){
     return rect_and_surface;
 }
 
-int grid_adjustSize(Grid *grid)
+int grid_adjustSize()
 {
     if(!grid->rect.w || !grid->rect.h || !grid->xTiles || !grid->yTiles)
     {
@@ -44,20 +44,20 @@ int grid_adjustSize(Grid *grid)
     return true;
 }
 
-void grid_alignCenter(Grid *grid, int window_width, int window_height) {
-    grid->rect.x = window_width;
-    grid->rect.y = window_height;
+void grid_alignCenter() {
+    grid->rect.x = WINDOW_WIDTH;
+    grid->rect.y = WINDOW_HEIGHT;
 }
 
-Grid grid_init(SDL_Renderer* renderer, int window_width, int window_height) {
+Grid grid_init() {
     grid  = (Grid *) malloc (sizeof(Grid));
     if(grid == NULL){ 
         printf("Error - can't allocate\n"); 
         return;
     }
-    grid->rect.w = window_width;
-    grid->rect.h = window_height;
-    grid_alignCenter(grid, window_width, window_height);
+    grid->rect.w = WINDOW_WIDTH;
+    grid->rect.h = WINDOW_HEIGHT;
+    grid_alignCenter(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
     if(grid_init_surfaces() == -1) {
         fprintf(stderr, "Error: cant allocate grid surfaces! !\n");
         return;
@@ -81,9 +81,7 @@ Grid grid_init(SDL_Renderer* renderer, int window_width, int window_height) {
     // Init all tiles
     for(int i = 0; i < grid->xTiles; ++i) {
         for(int j = 0; j < grid->yTiles; ++j) {
-            grid_init_tile(renderer, grid,
-                          &(grid->tiles[i][j]),
-                          i, j, soil);
+            grid_init_tile(&(grid->tiles[i][j]),i, j, soil);
         }
     }
     return *grid;
@@ -91,7 +89,7 @@ Grid grid_init(SDL_Renderer* renderer, int window_width, int window_height) {
 
 
 
-void grid_init_tile(SDL_Renderer* renderer, Grid *grid, Tile *tile, int i, int j, TILE_TYPE type) {
+void grid_init_tile(Tile *tile, int i, int j, TILE_TYPE type) {
     printf("grid_init_tile \n");
     tile->tile_type = type;
     RectAndSurface rect_and_surface = get_rect_and_surface_by_tile_type(tile->tile_type); 
@@ -102,17 +100,17 @@ void grid_init_tile(SDL_Renderer* renderer, Grid *grid, Tile *tile, int i, int j
     tile->rect_and_surface.rect.y = tile->rect_and_surface.rect.h * j;
 }
 
-void grid_render(SDL_Surface* screen, Grid *grid, SDL_Renderer *renderer) {
+void grid_render() {
     // Render all tiles
     printf("grid_render%d, %d\n", grid->xTiles, grid->yTiles);
     for(int i = 0; i < grid->xTiles; ++i) {
         for(int j = 0; j < grid->yTiles; ++j) {
-            grid_render_tile(screen, &(grid->tiles[i][j]), renderer);
+            grid_render_tile(&(grid->tiles[i][j]));
         }
     }
 }
 
-void grid_render_tile(SDL_Surface* screen, Tile *tile, SDL_Renderer *renderer) {
+void grid_render_tile(Tile *tile) {
     RectAndSurface* rect_and_surface = &tile->rect_and_surface;
     SDL_BlitSurface(&rect_and_surface->surface, NULL, screen, &rect_and_surface->rect);
 }
