@@ -64,7 +64,7 @@ void play() {
     Uint32 deltaclock = 0;
     Uint32 currentFPS = 0;
     int mouseX, mouseY, buttons;
-    int FPSDivided = 1000/FPS;
+    int frameRateDelay = 1000.0f/FPS;
     while (!closeRequested) {
         // process events
         startclock = SDL_GetTicks();
@@ -117,7 +117,6 @@ void play() {
         printf("Pre gameLoop gridRender\n");
         SDL_RenderClear(renderer);
         gridRender(screen, &grid, renderer);
-
         SDL_BlitSurface(&humanPlayer.rectAndSurface.surface,
         NULL, screen, &humanPlayer.rectAndSurface.rect);
 
@@ -126,8 +125,8 @@ void play() {
         SDL_RenderPresent(renderer);
         SDL_DestroyTexture(screenTexture);
         fpsCounterLoop(&startclock, &deltaclock, &currentFPS);
-        if((FPSDivided) > deltaclock) {
-            SDL_Delay((FPSDivided) - deltaclock);
+        if((frameRateDelay) > deltaclock) {
+            SDL_Delay((frameRateDelay) - deltaclock);
         }
     }
     apply_functionToAllSubPointers(&humanPlayer.rectAndSurface.surface, 1, SDL_DestroyTexture);

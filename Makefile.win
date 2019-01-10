@@ -1,5 +1,5 @@
-CC := gcc
-FLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wall
+CC := x86_64-w64-mingw32-gcc
+FLAGS := -lmingw32 -lSDL2main -lSDL2 -ggdb3 -O0 --std=c99 -lSDL2_image -lm  -Wall
 HDRS := $(wildcard src/c/*.h) 
 SRCS := $(wildcard src/c/*.c)
 OBJS := $(SRCS:src/c/%.c=tmp/%.o)
