@@ -1,5 +1,6 @@
 # PrehistoricWorld
 An Attempt to implement a simple 2d survival game written in C as a back-end layer over SDL 2 library to interface with Haskell, while using Haskell to implement the game logic.
+The project host OS is Linux and the build targets are Windows & Linux.
 
 * To build:
 ```bash
@@ -17,3 +18,4 @@ cd $Project_folder
 cd out
 ./test
 ```
+
