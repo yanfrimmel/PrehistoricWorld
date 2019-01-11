@@ -19,7 +19,6 @@
 
 SDL_Window* window;
 SDL_Renderer* renderer;
-SDL_Surface* screen;
 
 int initializeSdl(void);
 SDL_Window* createWindow(int flags);  /* An example function declaration */

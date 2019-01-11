@@ -102,17 +102,20 @@ void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type) {
 
 void gridRender() {
     // Render all tiles
+    if(isEntireGridIsBlit) return;
     printf("gridRender%d, %d\n", grid->xTiles, grid->yTiles);
     for(int i = 0; i < grid->xTiles; ++i) {
         for(int j = 0; j < grid->yTiles; ++j) {
             gridRenderTile(&(grid->tiles[i][j]));
         }
     }
+    gridTexture = SDL_CreateTextureFromSurface(renderer,gridSurface);
+    isEntireGridIsBlit = true;
 }
 
 void gridRenderTile(Tile *tile) {
     RectAndSurface* rectAndSurface = &tile->rectAndSurface;
-    SDL_BlitSurface(&rectAndSurface->surface, NULL, screen, &rectAndSurface->rect);
+    SDL_BlitSurface(&rectAndSurface->surface, NULL, gridSurface, &rectAndSurface->rect);
 }
 
 void destroyGridSurfaces() {
@@ -120,6 +123,7 @@ void destroyGridSurfaces() {
         SDL_FreeSurface(&tileSurfaces[i]);
     }
     free(tileSurfaces);
+    free(gridSurface);
 }
 
 void destroyGrid() {

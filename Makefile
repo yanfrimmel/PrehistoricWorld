@@ -3,12 +3,12 @@ FLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wa
 HDRS := $(wildcard src/c/*.h) 
 SRCS := $(wildcard src/c/*.c)
 OBJS := $(SRCS:src/c/%.c=tmp/%.o)
-EXEC := out/PrehistoricWorld
+EXEC := targetLinux/PrehistoricWorld
 #---------------------------------------------------------- test
 FLAGS_TEST    := $(FLAGS)
 SRCS_TEST     := $(wildcard test/c/*.c)
 OBJS_TEST     := $(filter-out tmp/main.o, $(OBJS)) $(SRCS_TEST:test/c/%.c=tmp/%.o)
-EXEC_TEST     := out/test
+EXEC_TEST     := targetLinux/test
 
 .SUFFIXES:
 #---------------------------------------------------------- Targets
@@ -40,5 +40,5 @@ tmp/%.o: test/c/%.c
 .PHONY: clean, clear
 
 clean clear:
-	@rm -f out/* && echo "[CL]  out/"
+	@rm -f targetLinux/* && echo "[CL]  targetLinux/"
 	@rm -f tmp/* && echo "[CL]  tmp/"

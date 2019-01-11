@@ -3,12 +3,12 @@ FLAGS := -lmingw32 -lSDL2main -lSDL2 -ggdb3 -O0 --std=c99 -lSDL2_image -lm  -Wal
 HDRS := $(wildcard src/c/*.h) 
 SRCS := $(wildcard src/c/*.c)
 OBJS := $(SRCS:src/c/%.c=tmp/%.o)
-EXEC := out/PrehistoricWorld
+EXEC := targetWindows/PrehistoricWorld.exe
 #---------------------------------------------------------- test
 FLAGS_TEST    := $(FLAGS)
 SRCS_TEST     := $(wildcard test/c/*.c)
 OBJS_TEST     := $(filter-out tmp/main.o, $(OBJS)) $(SRCS_TEST:test/c/%.c=tmp/%.o)
-EXEC_TEST     := out/test
+EXEC_TEST     := targetWindows/test
 
 .SUFFIXES:
 #---------------------------------------------------------- Targets
@@ -40,5 +40,5 @@ tmp/%.o: test/c/%.c
 .PHONY: clean, clear
 
 clean clear:
-	@rm -f out/* && echo "[CL]  out/"
+	@rm -f targetWindows/* && echo "[CL]  targetWindows/"
 	@rm -f tmp/* && echo "[CL]  tmp/"

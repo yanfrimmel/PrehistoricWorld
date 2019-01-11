@@ -10,6 +10,7 @@
         "utils.h": "c",
         "sdl_timer.h": "c",
         "game_map.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "grid.h": "c"
     }
 }

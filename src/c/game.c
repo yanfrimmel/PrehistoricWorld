@@ -55,6 +55,7 @@ void play() {
     int closeRequested = 0;
     printf("Pre initPlayer \n");
     Animal humanPlayer = initAnimal((WINDOW_WIDTH - 32) / 2, (WINDOW_HEIGHT - 32) / 2, human, male);
+     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, &humanPlayer.rectAndSurface.surface);
     printf("Pre gridInit \n");
     Grid grid = gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -67,7 +68,6 @@ void play() {
     int frameRateDelay = 1000.0f/FPS;
     while (!closeRequested) {
         // process events
-        startclock = SDL_GetTicks();
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -104,8 +104,6 @@ void play() {
         if (humanPlayer.movement.yPos <= 0) humanPlayer.movement.yPos = 0;
         if (humanPlayer.movement.xPos >= WINDOW_WIDTH - humanPlayer.rectAndSurface.rect.w) humanPlayer.movement.xPos = WINDOW_WIDTH - humanPlayer.rectAndSurface.rect.w;
         if (humanPlayer.movement.yPos >= WINDOW_HEIGHT - humanPlayer.rectAndSurface.rect.h) humanPlayer.movement.yPos = WINDOW_HEIGHT - humanPlayer.rectAndSurface.rect.h;
-
- 
         if (humanPlayer.toTarget.distance < IMAGE_PIXELS/2) {
                 printf("at target\n");
                 humanPlayer.movement.xVel = humanPlayer.movement.yVel = 0;
@@ -116,31 +114,31 @@ void play() {
 
         printf("Pre gameLoop gridRender\n");
         SDL_RenderClear(renderer);
-        gridRender(screen, &grid, renderer);
-        SDL_BlitSurface(&humanPlayer.rectAndSurface.surface,
-        NULL, screen, &humanPlayer.rectAndSurface.rect);
-
-        SDL_Texture* screenTexture = SDL_CreateTextureFromSurface(renderer,screen);
-        SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
+        gridRender();
+       
+        SDL_RenderCopy(renderer, gridTexture, NULL, NULL);
+        SDL_RenderCopy(renderer, playerTexture, NULL, &humanPlayer.rectAndSurface.rect);
+       
         SDL_RenderPresent(renderer);
-        SDL_DestroyTexture(screenTexture);
         fpsCounterLoop(&startclock, &deltaclock, &currentFPS);
-        if((frameRateDelay) > deltaclock) {
+        if((FPS) < currentFPS) {
             SDL_Delay((frameRateDelay) - deltaclock);
         }
+        startclock = SDL_GetTicks();
     }
+
     apply_functionToAllSubPointers(&humanPlayer.rectAndSurface.surface, 1, SDL_DestroyTexture);
-    // SDL_DestroyTexture(&humanPlayer.rectAndSurface.surface);
+    SDL_DestroyTexture(playerTexture);
     quitSdl();
     return;
 }
 
 void quitSdl() {
     printf("quitSdl called: quiting\n");
+    SDL_DestroyTexture(gridTexture);
     destroyHumanPlayer();
     destroyGridSurfaces();
     destroyGrid();
-    SDL_FreeSurface(screen);
     apply_functionToAllSubPointers(renderer, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);
     SDL_Quit();

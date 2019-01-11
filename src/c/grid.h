@@ -46,6 +46,9 @@ typedef struct Grid Grid;
 Grid *grid;
 SDL_Surface* tileSurfaces;
 int numberOfTileSurfaces;
+bool isEntireGridIsBlit;
+SDL_Surface* gridSurface;
+SDL_Texture* gridTexture;
 
 int gridAdjustSize();
 void gridAlignCenter();
