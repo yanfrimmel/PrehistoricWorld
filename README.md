@@ -10,10 +10,16 @@ make all
 ```bash
 make -f Makefile.win all
 ```
-* To run:
+* To run in windwos:
 ```bash
 cd $Project_folder
-cd out
+cd targetWindows
+PrehistoricWorld.exe
+```
+* To run in Linux:
+```bash
+cd $Project_folder
+cd targetLinux
 ./PrehistoricWorld
 ```
 * To test:
