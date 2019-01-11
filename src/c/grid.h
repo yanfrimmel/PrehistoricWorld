@@ -2,19 +2,19 @@
 #define GRID_H
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-
+#include <math.h>
 #include "utils.h"
 #include "game.h"
 
-#define WINDOW_WIDTH (800)
-#define WINDOW_HEIGHT (600)
-#define IMAGE_PIXELS (32)
-#define GRID_WIDTH (WINDOW_WIDTH/IMAGE_PIXELS)
-#define GRID_HEIGHT (WINDOW_HEIGHT/IMAGE_PIXELS)
+#define WINDOW_WIDTH (800.0)
+#define WINDOW_HEIGHT (600.0)
 
 #define SOIL_IMAGE_PATH ("../resources/soil.png")
 #define GRASS_IMAGE_PATH ("../resources/grass.png")
 #define STONES_IMAGE_PATH ("../resources/stones.png")
+
+int GRID_HEIGHT; 
+int GRID_WIDTH;
 //thats the way to define enum in c, hideous.
 typedef enum TILE_TYPE {
     soil = 0,
@@ -24,41 +24,33 @@ typedef enum TILE_TYPE {
 } TILE_TYPE;
 
 struct Tile {
-    RectAndSurface rectAndSurface;
+    RectAndTexture RectAndTexture;
     TILE_TYPE tileType;
 };
 typedef struct Tile Tile;
 
 struct Grid {
-    // x, y, width, height
     SDL_Rect rect;
-
-    // Number of cells over the x axis
-    int xTiles;
-    // Number of cells over the y axis
-    int yTiles;
-
-    // Matrix of Tiles
-    Tile tiles[GRID_WIDTH][GRID_HEIGHT];
+    Tile** tiles;
 };
 typedef struct Grid Grid;
 
 Grid *grid;
-SDL_Surface* tileSurfaces;
-int numberOfTileSurfaces;
-bool isEntireGridIsBlit;
-SDL_Surface* gridSurface;
+SDL_Texture** tileTextures;
+int numberOfTileImages;
+bool isEntireGridIsDrawn;
 SDL_Texture* gridTexture;
 
-int gridAdjustSize();
 void gridAlignCenter();
 Grid gridInit();
 void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type);
-void gridRender();
-void gridRenderTile(Tile *tile);
-void destroyGridSurfaces();
+void gridDraw();
+void gridDrawTile(Tile *tile);
+void destroyGridTextures();
 void destroyGrid();
-RectAndSurface getRectAndSurfaceByTileType(int tileType);
+void refreshGrid();
+void updateTile(Tile tile, TILE_TYPE type);
+RectAndTexture getRectAndTextureByTileType(int tileType);
 const char* getImagePathStringByTileType(TILE_TYPE tileType);
 
 #endif

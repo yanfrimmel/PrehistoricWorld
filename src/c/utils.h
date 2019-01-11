@@ -6,11 +6,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-struct RectAndSurface {
+#define IMAGE_PIXELS (32.0)
+
+struct RectAndTexture {
     SDL_Rect rect;
-    SDL_Surface surface;
+    SDL_Texture* texture;
 };
-typedef struct RectAndSurface RectAndSurface;
+typedef struct RectAndTexture RectAndTexture;
 
 struct DistanceFromTarget {
     float distance;
@@ -30,6 +32,11 @@ struct Movement {
 typedef struct Movement Movement;
 
 void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) );
-RectAndSurface loadImageAndGetSpriteRect(const char *imagePath);
+RectAndTexture loadImageTextureAndRectAndTexture(const char *imagePath);
+RectAndTexture createRectAndTexture(SDL_Texture* texture);
+SDL_Texture* loadTexture(const char *imagePath);
+
+SDL_Window* window;
+SDL_Renderer* renderer;
 
 #endif 

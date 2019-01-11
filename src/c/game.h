@@ -17,9 +17,6 @@
 #define SPEED (500)
 #define FPS (60)
 
-SDL_Window* window;
-SDL_Renderer* renderer;
-
 int initializeSdl(void);
 SDL_Window* createWindow(int flags);  /* An example function declaration */
 SDL_Renderer* createRenderer();

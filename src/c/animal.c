@@ -8,7 +8,7 @@ Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender) {
     }
 
     humanPlayer->imagePath = getImagePathStringByAnimalTypeAndGender(animalType,gender);
-    humanPlayer->rectAndSurface = loadImageAndGetSpriteRect(humanPlayer->imagePath);
+    humanPlayer->RectAndTexture = loadImageTextureAndRectAndTexture(humanPlayer->imagePath);
 
     humanPlayer->movement.xPos = xPos;
     humanPlayer->movement.yPos = yPos;

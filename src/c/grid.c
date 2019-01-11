@@ -3,45 +3,26 @@
 // #include <unistd.h>  //Header file for sleep(). man 3 sleep for details. 
 // #include <pthread.h> 
 
-int gridInitSurfaces() {
-    numberOfTileSurfaces = 1;
-    tileSurfaces = (SDL_Surface *) malloc ( numberOfTileSurfaces * sizeof(SDL_Surface));
-    if(tileSurfaces == NULL){ printf("Error - can't allocate\n"); return -1; }
+int gridInitTextures() {
+    numberOfTileImages = 3;
+    tileTextures = (SDL_Texture **) malloc ( numberOfTileImages * sizeof(SDL_Texture*));
+    if(tileTextures == NULL){ printf("Error - can't allocate\n"); return -1; }
     //Images load
-    for(int i = 0; i < numberOfTileSurfaces; i++) { 
-        tileSurfaces[i] = *IMG_Load(getImagePathStringByTileType(grass)); ; 
-        if(!&tileSurfaces) {
-            printf("Error - can't create surface\n"); return -1; 
+    for(int i = 0; i < numberOfTileImages; i++) { 
+        tileTextures[i] = loadTexture(getImagePathStringByTileType(i));
+        if(!tileTextures) {
+            printf("Error - can't create texture\n"); return -1; 
         }
     }
     return 1;
 }  
 
-RectAndSurface getRectAndSurfaceByTileType(int tileType){
-    SDL_Surface surface = tileSurfaces[tileType];
-    if(!&surface) {
+RectAndTexture getRectAndTextureByTileType(int tileType){
+    SDL_Texture* texture = tileTextures[tileType];
+    if(!&texture) {
             printf("Error - can't allocate\n"); return; 
     }
-    SDL_Rect dest;
-    SDL_GetClipRect(&surface, &dest);
-    RectAndSurface rectAndSurface = {dest,surface};
-    return rectAndSurface;
-}
-
-int gridAdjustSize()
-{
-    if(!grid->rect.w || !grid->rect.h || !grid->xTiles || !grid->yTiles)
-    {
-        fprintf(stderr, "Grid dimensions or number of tiles not initialised !\n");
-        return false;
-    }
-
-    // Init rect
-   
-    grid->rect.w -= grid->rect.w  % grid->xTiles;
-    grid->rect.h -= grid->rect.h  % grid->yTiles;
-
-    return true;
+    return createRectAndTexture(texture);
 }
 
 void gridAlignCenter() {
@@ -50,6 +31,9 @@ void gridAlignCenter() {
 }
 
 Grid gridInit() {
+    GRID_HEIGHT = ceil(WINDOW_HEIGHT/IMAGE_PIXELS);
+    GRID_WIDTH  = ceil(WINDOW_WIDTH/IMAGE_PIXELS);
+    gridTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
     grid  = (Grid *) malloc (sizeof(Grid));
     if(grid == NULL){ 
         printf("Error - can't allocate\n"); 
@@ -58,29 +42,26 @@ Grid gridInit() {
     grid->rect.w = WINDOW_WIDTH;
     grid->rect.h = WINDOW_HEIGHT;
     gridAlignCenter(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
-    if(gridInitSurfaces() == -1) {
-        fprintf(stderr, "Error: cant allocate grid surfaces! !\n");
+
+    if(gridInitTextures() == -1) {
+        fprintf(stderr, "Error: cant allocate grid textures! !\n");
         return;
     };
-    // Set number of cells
-    grid->xTiles = GRID_WIDTH;
-    grid->yTiles = GRID_HEIGHT;
 
-    if(!grid->rect.w || !grid->rect.h || !grid->xTiles || !grid->yTiles) {
+    grid->tiles = (Tile **) malloc ( GRID_WIDTH * sizeof(Tile*));
+
+    for (int i = 0; i < GRID_WIDTH; i++) {
+        grid->tiles[i] = (Tile *) malloc(GRID_HEIGHT * sizeof(Tile));
+    }
+
+    if(!grid->rect.w || !grid->rect.h ) {
         fprintf(stderr, "Grid dimensions or number of tiles not initialised !\n");
         return;
     }
 
-    if(grid->xTiles > GRID_WIDTH || grid->yTiles > GRID_HEIGHT) {
-        fprintf(stderr, "Grid number of tiles (%d,%d) is greater than (%d,%d) !\n",
-                grid->xTiles, grid->yTiles,
-                GRID_WIDTH, GRID_HEIGHT);
-        return;
-    }
-
     // Init all tiles
-    for(int i = 0; i < grid->xTiles; ++i) {
-        for(int j = 0; j < grid->yTiles; ++j) {
+    for(int i = 0; i < GRID_WIDTH; ++i) {
+        for(int j = 0; j < GRID_HEIGHT; ++j) {
             gridInitTile(&(grid->tiles[i][j]),i, j, soil);
         }
     }
@@ -92,41 +73,56 @@ Grid gridInit() {
 void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type) {
     printf("gridInitTile \n");
     tile->tileType = type;
-    RectAndSurface rectAndSurface = getRectAndSurfaceByTileType(tile->tileType); 
-    tile->rectAndSurface = rectAndSurface;
-    tile->rectAndSurface.rect.w = IMAGE_PIXELS;
-    tile->rectAndSurface.rect.h = IMAGE_PIXELS;
-    tile->rectAndSurface.rect.x = tile->rectAndSurface.rect.w * i;
-    tile->rectAndSurface.rect.y = tile->rectAndSurface.rect.h * j;
+    RectAndTexture RectAndTexture = getRectAndTextureByTileType(tile->tileType); 
+    tile->RectAndTexture = RectAndTexture;
+    tile->RectAndTexture.rect.w = IMAGE_PIXELS;
+    tile->RectAndTexture.rect.h = IMAGE_PIXELS;
+    tile->RectAndTexture.rect.x = tile->RectAndTexture.rect.w * i;
+    tile->RectAndTexture.rect.y = tile->RectAndTexture.rect.h * j;
 }
 
-void gridRender() {
+void gridDraw() {
     // Render all tiles
-    if(isEntireGridIsBlit) return;
-    printf("gridRender%d, %d\n", grid->xTiles, grid->yTiles);
-    for(int i = 0; i < grid->xTiles; ++i) {
-        for(int j = 0; j < grid->yTiles; ++j) {
-            gridRenderTile(&(grid->tiles[i][j]));
+    if(isEntireGridIsDrawn) return;
+   
+    SDL_SetRenderTarget(renderer, gridTexture);
+    printf("gridRender%d, %d\n", GRID_WIDTH, GRID_HEIGHT);
+    for(int i = 0; i < GRID_WIDTH; ++i) {
+        for(int j = 0; j < GRID_HEIGHT; ++j) {
+            gridDrawTile(&(grid->tiles[i][j]));
         }
     }
-    gridTexture = SDL_CreateTextureFromSurface(renderer,gridSurface);
-    isEntireGridIsBlit = true;
+    isEntireGridIsDrawn = true;
+    SDL_SetRenderTarget(renderer, NULL);
 }
 
-void gridRenderTile(Tile *tile) {
-    RectAndSurface* rectAndSurface = &tile->rectAndSurface;
-    SDL_BlitSurface(&rectAndSurface->surface, NULL, gridSurface, &rectAndSurface->rect);
+void gridDrawTile(Tile *tile) {
+    RectAndTexture* RectAndTexture = &tile->RectAndTexture;
+    SDL_RenderCopy(renderer, RectAndTexture->texture, NULL, &RectAndTexture->rect);
 }
 
-void destroyGridSurfaces() {
-    for(int i = 0; i < numberOfTileSurfaces; i++) { 
-        SDL_FreeSurface(&tileSurfaces[i]);
+void refreshGrid() {
+     isEntireGridIsDrawn = false;
+}
+
+void updateTile(Tile tile, TILE_TYPE type) { 
+    tile.tileType = type;
+    tile.RectAndTexture.texture = tileTextures[tile.tileType];
+    gridDrawTile(&tile);
+}
+
+void destroyGridTextures() {
+    for(int i = 0; i < numberOfTileImages; i++) { 
+        SDL_DestroyTexture(tileTextures[i]);
     }
-    free(tileSurfaces);
-    free(gridSurface);
+    free(tileTextures);
 }
 
 void destroyGrid() {
+    for(int i=0;i<GRID_WIDTH;i++){
+        free(grid->tiles[i]);
+    }
+    free(grid->tiles);
     free(grid);
 }
 

@@ -43,7 +43,7 @@ typedef enum ANIMAL_TYPE {
 // typedef enum 
 
 struct Animal {
-    RectAndSurface rectAndSurface;
+    RectAndTexture RectAndTexture;
     DistanceFromTarget toTarget;
     Movement movement;
     ANIMAL_TYPE type;

@@ -55,7 +55,7 @@ void play() {
     int closeRequested = 0;
     printf("Pre initPlayer \n");
     Animal humanPlayer = initAnimal((WINDOW_WIDTH - 32) / 2, (WINDOW_HEIGHT - 32) / 2, human, male);
-     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, &humanPlayer.rectAndSurface.surface);
+    SDL_Texture* playerTexture = humanPlayer.RectAndTexture.texture;
     printf("Pre gridInit \n");
     Grid grid = gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -85,9 +85,9 @@ void play() {
             sqrt(humanPlayer.toTarget.deltaX * humanPlayer.toTarget.deltaX + 
             humanPlayer.toTarget.deltaY * humanPlayer.toTarget.deltaY);
 
-            humanPlayer.toTarget.targetX = mouseX - humanPlayer.rectAndSurface.rect.w / 2;
-            humanPlayer.toTarget.targetY = mouseY - humanPlayer.rectAndSurface.rect.h / 2;
-             if (humanPlayer.toTarget.distance > IMAGE_PIXELS/2) {
+            humanPlayer.toTarget.targetX = mouseX - humanPlayer.RectAndTexture.rect.w / 2;
+            humanPlayer.toTarget.targetY = mouseY - humanPlayer.RectAndTexture.rect.h / 2;
+            if (humanPlayer.toTarget.distance > IMAGE_PIXELS/2) {
                 humanPlayer.movement.xVel = humanPlayer.toTarget.deltaX * SPEED / humanPlayer.toTarget.distance;
                 humanPlayer.movement.yVel = humanPlayer.toTarget.deltaY * SPEED / humanPlayer.toTarget.distance;
             }
@@ -102,22 +102,24 @@ void play() {
         // collision detection with bounds
         if (humanPlayer.movement.xPos <= 0) humanPlayer.movement.xPos = 0;
         if (humanPlayer.movement.yPos <= 0) humanPlayer.movement.yPos = 0;
-        if (humanPlayer.movement.xPos >= WINDOW_WIDTH - humanPlayer.rectAndSurface.rect.w) humanPlayer.movement.xPos = WINDOW_WIDTH - humanPlayer.rectAndSurface.rect.w;
-        if (humanPlayer.movement.yPos >= WINDOW_HEIGHT - humanPlayer.rectAndSurface.rect.h) humanPlayer.movement.yPos = WINDOW_HEIGHT - humanPlayer.rectAndSurface.rect.h;
+        if (humanPlayer.movement.xPos >= WINDOW_WIDTH - humanPlayer.RectAndTexture.rect.w) humanPlayer.movement.xPos = WINDOW_WIDTH - humanPlayer.RectAndTexture.rect.w;
+        if (humanPlayer.movement.yPos >= WINDOW_HEIGHT - humanPlayer.RectAndTexture.rect.h) humanPlayer.movement.yPos = WINDOW_HEIGHT - humanPlayer.RectAndTexture.rect.h;
         if (humanPlayer.toTarget.distance < IMAGE_PIXELS/2) {
                 printf("at target\n");
                 humanPlayer.movement.xVel = humanPlayer.movement.yVel = 0;
         }
         // set the positions in the struct
-        humanPlayer.rectAndSurface.rect.y = (int) humanPlayer.movement.yPos;
-        humanPlayer.rectAndSurface.rect.x = (int) humanPlayer.movement.xPos;
+        humanPlayer.RectAndTexture.rect.y = (int) humanPlayer.movement.yPos;
+        humanPlayer.RectAndTexture.rect.x = (int) humanPlayer.movement.xPos;
 
         printf("Pre gameLoop gridRender\n");
         SDL_RenderClear(renderer);
-        gridRender();
-       
+        gridDraw();
         SDL_RenderCopy(renderer, gridTexture, NULL, NULL);
-        SDL_RenderCopy(renderer, playerTexture, NULL, &humanPlayer.rectAndSurface.rect);
+
+        updateTile(grid.tiles[24][17], stones);
+        
+        SDL_RenderCopy(renderer, playerTexture, NULL, &humanPlayer.RectAndTexture.rect);
        
         SDL_RenderPresent(renderer);
         fpsCounterLoop(&startclock, &deltaclock, &currentFPS);
@@ -127,7 +129,6 @@ void play() {
         startclock = SDL_GetTicks();
     }
 
-    apply_functionToAllSubPointers(&humanPlayer.rectAndSurface.surface, 1, SDL_DestroyTexture);
     SDL_DestroyTexture(playerTexture);
     quitSdl();
     return;
@@ -137,7 +138,7 @@ void quitSdl() {
     printf("quitSdl called: quiting\n");
     SDL_DestroyTexture(gridTexture);
     destroyHumanPlayer();
-    destroyGridSurfaces();
+    destroyGridTextures();
     destroyGrid();
     apply_functionToAllSubPointers(renderer, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);

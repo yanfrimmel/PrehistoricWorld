@@ -15,18 +15,33 @@ void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) 
     } 
 }
 
-RectAndSurface loadImageAndGetSpriteRect(const char *imagePath) {
-
-    SDL_Surface* surface = IMG_Load(imagePath);
-    if (!surface) {
+SDL_Texture* loadTexture(const char *imagePath) {
+    printf("pre SDL_FreeSurface: \n");
+    SDL_Texture* texture = IMG_LoadTexture(renderer, imagePath);
+      if (!texture) {
         printf("error creating surface\n");
+        SDL_DestroyRenderer(renderer);
+        SDL_Quit();
+        return;
+    }
+    return texture;
+}
+
+RectAndTexture loadImageTextureAndRectAndTexture(const char *imagePath) {
+    SDL_Texture* texture = loadTexture(imagePath);
+    if (!texture) {
+        printf("error creating texture\n");
         // SDL_Quit();
         return;
     }
+    return createRectAndTexture(texture);
+}
+
+RectAndTexture createRectAndTexture(SDL_Texture* texture) {
     SDL_Rect dest;
-    SDL_GetClipRect(surface, &dest);
-    RectAndSurface rectAndSurface = {dest,*surface};
-    return rectAndSurface;
+    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    RectAndTexture RectAndTexture = {dest, texture};
+    return RectAndTexture;
 }
 
 
