@@ -31,7 +31,7 @@ struct Movement {
 };
 typedef struct Movement Movement;
 
-void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) );
+void applyFunctionToAllSubPointers(void** pointers, int size, void (*f)(void*) );
 RectAndTexture loadImageTextureAndRectAndTexture(const char *imagePath);
 RectAndTexture createRectAndTexture(SDL_Texture* texture);
 SDL_Texture* loadTexture(const char *imagePath);

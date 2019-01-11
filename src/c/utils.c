@@ -1,6 +1,6 @@
 #include "utils.h"
 
-void apply_functionToAllSubPointers(void** pointers, int size, void (*f)(void*) ){
+void applyFunctionToAllSubPointers(void** pointers, int size, void (*f)(void*) ){
     if(!pointers) {
         printf("apply_functionToAllSubPointers null pointer\n");
         return;
@@ -31,7 +31,7 @@ RectAndTexture loadImageTextureAndRectAndTexture(const char *imagePath) {
     SDL_Texture* texture = loadTexture(imagePath);
     if (!texture) {
         printf("error creating texture\n");
-        // SDL_Quit();
+        SDL_Quit();
         return;
     }
     return createRectAndTexture(texture);
