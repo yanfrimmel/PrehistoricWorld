@@ -2,7 +2,7 @@
 
 void applyFunctionToAllSubPointers(void** pointers, int size, void (*f)(void*) ){
     if(!pointers) {
-        printf("apply_functionToAllSubPointers null pointer\n");
+        printf("applyFunctionToAllSubPointers null pointer\n");
         return;
     }
     printf("size = %d\n", size);

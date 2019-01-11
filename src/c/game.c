@@ -140,7 +140,7 @@ void quitSdl() {
     destroyHumanPlayer();
     destroyGridTextures();
     destroyGrid();
-    apply_functionToAllSubPointers(renderer, 1, SDL_DestroyRenderer);
+    applyFunctionToAllSubPointers(renderer, 1, SDL_DestroyRenderer);
     SDL_DestroyWindow((SDL_Renderer*)window);
     SDL_Quit();
 }
