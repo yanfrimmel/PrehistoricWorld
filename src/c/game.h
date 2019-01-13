@@ -14,8 +14,6 @@
 
 #define GAME_NAME ("Prehistoric World")
 #define SDL_WINDOW_FULLSCREEN (0x00000001) //1 = yes
-#define SPEED (500)
-#define FPS (60)
 
 int initializeSdl(void);
 SDL_Window* createWindow(int flags);  /* An example function declaration */

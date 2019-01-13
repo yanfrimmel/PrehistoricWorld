@@ -59,8 +59,6 @@ struct Animal {
 };
 typedef struct Animal Animal;
 
- Animal *humanPlayer;
-
 Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender);
 void destroyHumanPlayer();
 void editAnimalMovenet(Movement *movement, float xPos, float yPos, float xVel, float yVel);
@@ -71,5 +69,8 @@ void editAnimalDistance_fromTarget(DistanceFromTarget *target,
     int targetX,
     int targetY);
 const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GENDER gender);
+void onDestinationSelected(int* destX, int* destY, Animal* animal);
+
+Animal *humanPlayer;
 
 #endif

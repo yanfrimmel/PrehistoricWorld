@@ -58,3 +58,16 @@ const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GEND
                 }
     }
 }
+
+void onDestinationSelected(int* destX, int* destY, Animal* animal) {
+     animal->toTarget.distance = 
+            sqrt(animal->toTarget.deltaX * animal->toTarget.deltaX + 
+            animal->toTarget.deltaY * animal->toTarget.deltaY);
+
+            animal->toTarget.targetX = *destX - animal->RectAndTexture.rect.w / 2;
+            animal->toTarget.targetY = *destY - animal->RectAndTexture.rect.h / 2;
+            if (animal->toTarget.distance > IMAGE_PIXELS/2) {
+                animal->movement.xVel = animal->toTarget.deltaX * SPEED / animal->toTarget.distance;
+                animal->movement.yVel = animal->toTarget.deltaY * SPEED / animal->toTarget.distance;
+            }
+}

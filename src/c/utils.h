@@ -7,6 +7,8 @@
 #include <SDL2/SDL_image.h>
 
 #define IMAGE_PIXELS (32.0)
+#define SPEED (500)
+#define FPS (60)
 
 struct RectAndTexture {
     SDL_Rect rect;

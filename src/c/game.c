@@ -54,7 +54,7 @@ void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS
 void play() {
     int closeRequested = 0;
     printf("Pre initPlayer \n");
-    Animal humanPlayer = initAnimal((WINDOW_WIDTH - 32) / 2, (WINDOW_HEIGHT - 32) / 2, human, male);
+    Animal humanPlayer = initAnimal((WINDOW_WIDTH - IMAGE_PIXELS) / 2, (WINDOW_HEIGHT - IMAGE_PIXELS) / 2, human, male);
     SDL_Texture* playerTexture = humanPlayer.RectAndTexture.texture;
     printf("Pre gridInit \n");
     Grid grid = gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -81,16 +81,17 @@ void play() {
         buttons = SDL_GetMouseState(&mouseX, &mouseY);
     
         if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-            humanPlayer.toTarget.distance = 
-            sqrt(humanPlayer.toTarget.deltaX * humanPlayer.toTarget.deltaX + 
-            humanPlayer.toTarget.deltaY * humanPlayer.toTarget.deltaY);
+            onDestinationSelected(&mouseX, &mouseY, &humanPlayer);
+            // humanPlayer.toTarget.distance = 
+            // sqrt(humanPlayer.toTarget.deltaX * humanPlayer.toTarget.deltaX + 
+            // humanPlayer.toTarget.deltaY * humanPlayer.toTarget.deltaY);
 
-            humanPlayer.toTarget.targetX = mouseX - humanPlayer.RectAndTexture.rect.w / 2;
-            humanPlayer.toTarget.targetY = mouseY - humanPlayer.RectAndTexture.rect.h / 2;
-            if (humanPlayer.toTarget.distance > IMAGE_PIXELS/2) {
-                humanPlayer.movement.xVel = humanPlayer.toTarget.deltaX * SPEED / humanPlayer.toTarget.distance;
-                humanPlayer.movement.yVel = humanPlayer.toTarget.deltaY * SPEED / humanPlayer.toTarget.distance;
-            }
+            // humanPlayer.toTarget.targetX = mouseX - humanPlayer.RectAndTexture.rect.w / 2;
+            // humanPlayer.toTarget.targetY = mouseY - humanPlayer.RectAndTexture.rect.h / 2;
+            // if (humanPlayer.toTarget.distance > IMAGE_PIXELS/2) {
+            //     humanPlayer.movement.xVel = humanPlayer.toTarget.deltaX * SPEED / humanPlayer.toTarget.distance;
+            //     humanPlayer.movement.yVel = humanPlayer.toTarget.deltaY * SPEED / humanPlayer.toTarget.distance;
+            // }
         }
         
         // update positions
