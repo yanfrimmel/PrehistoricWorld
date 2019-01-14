@@ -6,6 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#define WINDOW_WIDTH (800.0)
+#define WINDOW_HEIGHT (600.0)
 #define IMAGE_PIXELS (32.0)
 #define SPEED (500)
 #define FPS (60)

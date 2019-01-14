@@ -60,14 +60,44 @@ const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GEND
 }
 
 void onDestinationSelected(int* destX, int* destY, Animal* animal) {
-     animal->toTarget.distance = 
-            sqrt(animal->toTarget.deltaX * animal->toTarget.deltaX + 
-            animal->toTarget.deltaY * animal->toTarget.deltaY);
+    animal->toTarget.distance = 
+    sqrt(animal->toTarget.deltaX * animal->toTarget.deltaX + 
+    animal->toTarget.deltaY * animal->toTarget.deltaY);
 
-            animal->toTarget.targetX = *destX - animal->RectAndTexture.rect.w / 2;
-            animal->toTarget.targetY = *destY - animal->RectAndTexture.rect.h / 2;
-            if (animal->toTarget.distance > IMAGE_PIXELS/2) {
-                animal->movement.xVel = animal->toTarget.deltaX * SPEED / animal->toTarget.distance;
-                animal->movement.yVel = animal->toTarget.deltaY * SPEED / animal->toTarget.distance;
-            }
+    animal->toTarget.targetX = *destX - animal->RectAndTexture.rect.w / 2;
+    animal->toTarget.targetY = *destY - animal->RectAndTexture.rect.h / 2;
+    if (animal->toTarget.distance > IMAGE_PIXELS/2) {
+        animal->movement.xVel = animal->toTarget.deltaX * SPEED / animal->toTarget.distance;
+        animal->movement.yVel = animal->toTarget.deltaY * SPEED / animal->toTarget.distance;
+    }
+}
+
+void updatePosition(Animal* animal) {
+    animal->movement.xPos += animal->movement.xVel / FPS;
+    animal->movement.yPos += animal->movement.yVel / FPS;
+    animal->toTarget.deltaX = animal->toTarget.targetX - animal->movement.xPos;
+    animal->toTarget.deltaY = animal->toTarget.targetY - animal->movement.yPos;
+    animal->toTarget.distance = sqrt(animal->toTarget.deltaX * animal->toTarget.deltaX + animal->toTarget.deltaY * animal->toTarget.deltaY);
+}
+
+void borderOrTargetCollision(Animal* animal) { 
+     if (animal->movement.xPos <= 0) animal->movement.xPos = 0;
+        if (animal->movement.yPos <= 0) animal->movement.yPos = 0;
+        if (animal->movement.xPos >= WINDOW_WIDTH - animal->RectAndTexture.rect.w) animal->movement.xPos = WINDOW_WIDTH - animal->RectAndTexture.rect.w;
+        if (animal->movement.yPos >= WINDOW_HEIGHT - animal->RectAndTexture.rect.h) animal->movement.yPos = WINDOW_HEIGHT - animal->RectAndTexture.rect.h;
+        if (animal->toTarget.distance < IMAGE_PIXELS/2) {
+                printf("at target\n");
+                animal->movement.xVel = animal->movement.yVel = 0;
+        }
+}
+
+void updateRectPosition(Animal* animal) {
+    animal->RectAndTexture.rect.y = (int) animal->movement.yPos;
+    animal->RectAndTexture.rect.x = (int) animal->movement.xPos;
+}
+
+void updateAnimal(Animal* animal) { 
+    updatePosition(animal);
+    borderOrTargetCollision(animal);
+    updateRectPosition(animal);
 }

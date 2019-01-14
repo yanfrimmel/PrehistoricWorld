@@ -54,10 +54,10 @@ void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS
 void play() {
     int closeRequested = 0;
     printf("Pre initPlayer \n");
-    Animal humanPlayer = initAnimal((WINDOW_WIDTH - IMAGE_PIXELS) / 2, (WINDOW_HEIGHT - IMAGE_PIXELS) / 2, human, male);
-    SDL_Texture* playerTexture = humanPlayer.RectAndTexture.texture;
+    initAnimal((WINDOW_WIDTH - IMAGE_PIXELS) / 2, (WINDOW_HEIGHT - IMAGE_PIXELS) / 2, human, male);
+    SDL_Texture* playerTexture = humanPlayer->RectAndTexture.texture;
     printf("Pre gridInit \n");
-    Grid grid = gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+    gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     printf("Pre gameLoop while\n");
     //for FPS counter
@@ -66,6 +66,7 @@ void play() {
     Uint32 currentFPS = 0;
     int mouseX, mouseY, buttons;
     int frameRateDelay = 1000.0f/FPS;
+    isEntireGridIsDrawn = false;
     while (!closeRequested) {
         // process events
         SDL_Event event;
@@ -81,46 +82,19 @@ void play() {
         buttons = SDL_GetMouseState(&mouseX, &mouseY);
     
         if (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-            onDestinationSelected(&mouseX, &mouseY, &humanPlayer);
-            // humanPlayer.toTarget.distance = 
-            // sqrt(humanPlayer.toTarget.deltaX * humanPlayer.toTarget.deltaX + 
-            // humanPlayer.toTarget.deltaY * humanPlayer.toTarget.deltaY);
-
-            // humanPlayer.toTarget.targetX = mouseX - humanPlayer.RectAndTexture.rect.w / 2;
-            // humanPlayer.toTarget.targetY = mouseY - humanPlayer.RectAndTexture.rect.h / 2;
-            // if (humanPlayer.toTarget.distance > IMAGE_PIXELS/2) {
-            //     humanPlayer.movement.xVel = humanPlayer.toTarget.deltaX * SPEED / humanPlayer.toTarget.distance;
-            //     humanPlayer.movement.yVel = humanPlayer.toTarget.deltaY * SPEED / humanPlayer.toTarget.distance;
-            // }
+            onDestinationSelected(&mouseX, &mouseY, humanPlayer);
         }
         
-        // update positions
-        humanPlayer.movement.xPos += humanPlayer.movement.xVel / FPS;
-        humanPlayer.movement.yPos += humanPlayer.movement.yVel / FPS;
-        humanPlayer.toTarget.deltaX = humanPlayer.toTarget.targetX - humanPlayer.movement.xPos;
-        humanPlayer.toTarget.deltaY = humanPlayer.toTarget.targetY - humanPlayer.movement.yPos;
-        humanPlayer.toTarget.distance = sqrt(humanPlayer.toTarget.deltaX * humanPlayer.toTarget.deltaX + humanPlayer.toTarget.deltaY * humanPlayer.toTarget.deltaY);
-        // collision detection with bounds
-        if (humanPlayer.movement.xPos <= 0) humanPlayer.movement.xPos = 0;
-        if (humanPlayer.movement.yPos <= 0) humanPlayer.movement.yPos = 0;
-        if (humanPlayer.movement.xPos >= WINDOW_WIDTH - humanPlayer.RectAndTexture.rect.w) humanPlayer.movement.xPos = WINDOW_WIDTH - humanPlayer.RectAndTexture.rect.w;
-        if (humanPlayer.movement.yPos >= WINDOW_HEIGHT - humanPlayer.RectAndTexture.rect.h) humanPlayer.movement.yPos = WINDOW_HEIGHT - humanPlayer.RectAndTexture.rect.h;
-        if (humanPlayer.toTarget.distance < IMAGE_PIXELS/2) {
-                printf("at target\n");
-                humanPlayer.movement.xVel = humanPlayer.movement.yVel = 0;
-        }
-        // set the positions in the struct
-        humanPlayer.RectAndTexture.rect.y = (int) humanPlayer.movement.yPos;
-        humanPlayer.RectAndTexture.rect.x = (int) humanPlayer.movement.xPos;
+        updateAnimal(humanPlayer);
 
         printf("Pre gameLoop gridRender\n");
         SDL_RenderClear(renderer);
         gridDraw();
         SDL_RenderCopy(renderer, gridTexture, NULL, NULL);
 
-        updateTile(grid.tiles[24][17], stones);
+        updateTile(grid->tiles[5][5], stones);
         
-        SDL_RenderCopy(renderer, playerTexture, NULL, &humanPlayer.RectAndTexture.rect);
+        SDL_RenderCopy(renderer, playerTexture, NULL, &humanPlayer->RectAndTexture.rect);
        
         SDL_RenderPresent(renderer);
         fpsCounterLoop(&startclock, &deltaclock, &currentFPS);

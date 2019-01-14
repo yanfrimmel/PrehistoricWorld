@@ -92,8 +92,8 @@ void gridDraw() {
             gridDrawTile(&(grid->tiles[i][j]));
         }
     }
-    isEntireGridIsDrawn = true;
     SDL_SetRenderTarget(renderer, NULL);
+    isEntireGridIsDrawn = true;
 }
 
 void gridDrawTile(Tile *tile) {

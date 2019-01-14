@@ -6,9 +6,6 @@
 #include "utils.h"
 #include "game.h"
 
-#define WINDOW_WIDTH (800.0)
-#define WINDOW_HEIGHT (600.0)
-
 #define SOIL_IMAGE_PATH ("../resources/soil.png")
 #define GRASS_IMAGE_PATH ("../resources/grass.png")
 #define STONES_IMAGE_PATH ("../resources/stones.png")

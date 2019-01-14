@@ -70,6 +70,10 @@ void editAnimalDistance_fromTarget(DistanceFromTarget *target,
     int targetY);
 const char* getImagePathStringByAnimalTypeAndGender(ANIMAL_TYPE animalType, GENDER gender);
 void onDestinationSelected(int* destX, int* destY, Animal* animal);
+void updatePosition(Animal* animal);
+void borderOrTargetCollision(Animal* animal);
+void updateRectPosition(Animal* animal);
+void updateAnimal(Animal* animal);
 
 Animal *humanPlayer;
 
