@@ -6,9 +6,9 @@
 #include "utils.h"
 #include "game.h"
 
-#define SOIL_IMAGE_PATH ("../resources/soil.png")
-#define GRASS_IMAGE_PATH ("../resources/grass.png")
-#define STONES_IMAGE_PATH ("../resources/stones.png")
+#define SOIL_IMAGE_PATH ("resources/soil.png")
+#define GRASS_IMAGE_PATH ("resources/grass.png")
+#define STONES_IMAGE_PATH ("resources/stones.png")
 
 int GRID_HEIGHT; 
 int GRID_WIDTH;

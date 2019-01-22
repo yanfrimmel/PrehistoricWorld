@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wall                 #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
  
 module AI where
@@ -11,4 +12,4 @@ fibonacci n = fibs !! n
 fibonacci_hs :: CInt -> CInt
 fibonacci_hs = fromIntegral . fibonacci . fromIntegral
  
--- foreign export ccall fibonacci_hs :: CInt -> CInt
+foreign export ccall fibonacci_hs :: CInt -> CInt

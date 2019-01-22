@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/libc.a"
+                "/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/libc.a",
+                "${workspaceFolder}/dist/build/**",
+                "/usr/lib/ghc/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

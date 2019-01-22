@@ -11,6 +11,7 @@
         "sdl_timer.h": "c",
         "game_map.h": "c",
         "game.h": "c",
-        "grid.h": "c"
+        "grid.h": "c",
+        "ai_stub.h": "c"
     }
 }

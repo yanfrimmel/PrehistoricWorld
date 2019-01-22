@@ -46,7 +46,7 @@ void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS
     *deltaclock = SDL_GetTicks() - *startclock;
     if ( *deltaclock != 0 ) {
         *currentFPS = 1000 / *deltaclock;
-         printf("FPS:%d\n",*currentFPS);
+        //  printf("FPS:%d\n",*currentFPS);
     }
 
 }
@@ -87,7 +87,7 @@ void play() {
         
         updateAnimal(humanPlayer);
 
-        printf("Pre gameLoop gridRender\n");
+        // printf("Pre gameLoop gridRender\n");
         SDL_RenderClear(renderer);
         gridDraw();
         SDL_RenderCopy(renderer, gridTexture, NULL, NULL);
@@ -102,6 +102,7 @@ void play() {
             SDL_Delay((frameRateDelay) - deltaclock);
         }
         startclock = SDL_GetTicks();
+      
     }
 
     SDL_DestroyTexture(playerTexture);

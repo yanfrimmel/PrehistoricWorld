@@ -19,7 +19,7 @@ SDL_Texture* loadTexture(const char *imagePath) {
     printf("pre SDL_FreeSurface: \n");
     SDL_Texture* texture = IMG_LoadTexture(renderer, imagePath);
       if (!texture) {
-        printf("error creating surface\n");
+        printf("error creating texture\n");
         SDL_DestroyRenderer(renderer);
         SDL_Quit();
         return;
