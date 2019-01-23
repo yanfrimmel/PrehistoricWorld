@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include "utils.h"
 
-#define HUMAN_MALE_IMAGE_PATH ("resources/human_male.png")
-#define HUMAN_FEMALE_IMAGE_PATH ("resources/human_female.png")
+#define HUMAN_MALE_IMAGE_PATH ("../resources/human_male.png")
+#define HUMAN_FEMALE_IMAGE_PATH ("../resources/human_female.png")
 
 typedef enum DIET {
     herbivore = 0,

@@ -2,9 +2,10 @@
 #include "game.h"
 #include "AI_stub.h"
 #include <HsFFI.h>
-//ghc `sdl2-config --libs --cflags` -no-hs-main dist/build/AI.o tmp/** -lstdc++ -lSDL2_image
+//ghc `sdl2-config --libs --cflags` -no-hs-main dist/build/AI.o tmp/** -lSDL2_image
 int main( int argc, char** argv ) {
     //HASKELL CALL
+    printf("start hs_init: %d\n");
     hs_init(&argc, &argv);
     int i;
     i = fibonacci_hs(42);

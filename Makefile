@@ -1,5 +1,7 @@
+LIB := ghc -c -O src/haskell/** -outputdir tmp
 CC := gcc
-FLAGS := `sdl2-config --libs --cflags`  -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wall -I/usr/lib/ghc/include -Idist/build/ 
+GHC := ghc --make `sdl2-config --libs --cflags` -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -lSDL2_image -o targetLinux/PrehistoricWorld
+FLAGS := `sdl2-config --libs --cflags`  -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wall -I/usr/lib/ghc/include -Idist/build/
 HDRS := $(wildcard src/c/*.h) 
 SRCS := $(wildcard src/c/*.c)
 OBJS := $(SRCS:src/c/%.c=tmp/%.o)
@@ -15,11 +17,16 @@ EXEC_TEST     := targetLinux/test
 
 .PHONY: all
 
-all: $(EXEC)
+all: lib ghc
+	
+lib: 
+	$(LIB) && echo "[OK]  $@"
 
-$(EXEC): $(OBJS) $(HDRS) Makefile
-	$(CC) -o $@ $(OBJS) $(FLAGS) && echo "EXEC [OK]  $@"
+# $(EXEC): $(OBJS) $(HDRS) Makefile
+# 	$(CC) -o $@ $(OBJS) $(FLAGS) && echo "[OK]  $@"
 
+ghc: 
+	$(GHC) && echo "ghc [OK]  $@"
 # --------------------------------------------------------------
 
 .PHONY: test
@@ -40,5 +47,6 @@ tmp/%.o: test/c/%.c
 .PHONY: clean, clear
 
 clean clear:
-	@rm -f targetLinux/* && echo "[CL]  targetLinux/"
-	@rm -f tmp/* && echo "[CL]  tmp/"
+	@cabal clean
+	@rm -r -f targetLinux/* && echo "[CL]  targetLinux/"
+	@rm -r -f tmp/* && echo "[CL]  tmp/"
