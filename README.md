@@ -4,7 +4,7 @@ The project host OS is Linux and the build targets are Windows & Linux.
 
 #### Prerequisites:
 
-OS: Ubuntu 18.0.4
+OS: Ubuntu 18.0.4 (other linux distributions may use a different method to setup SDL2)
 
 Setup SDL2: 
 ```bash
