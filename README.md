@@ -2,6 +2,11 @@
 An Attempt to implement a simple 2d survival game written in C as a back-end layer over SDL 2 library to interface with Haskell, while using Haskell to implement the game logic.
 The project host OS is Linux and the build targets are Windows & Linux.
 
+*Prerequisites: 
+OS: Ubuntu 18.0.4
+Setup SDL2: 
+sudo apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-image-2.0-0 libsdl2-image-dev
+
 * To build for Linux:
 ```bash
 make linux
