@@ -40,7 +40,7 @@ cd ${Project_Folder}
 cd target/linux
 ./PrehistoricWorld
 ```
-* To test:
+#### To test:
 ```bash
 cd ${Project_Folder}
 cd out
