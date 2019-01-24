@@ -4,27 +4,36 @@ The project host OS is Linux and the build targets are Windows & Linux.
 
 * To build for Linux:
 ```bash
-make all
+make linux
 ```
 * To build for Windows:
 ```bash
-make -f Makefile.win all
+make windows
 ```
-* To run in windwos:
+* To build for all:
 ```bash
-cd $Project_folder
-cd targetWindows
+make all
+```
+* To clean for all:
+```bash
+make clean
+```
+
+* To run in windows:
+```bash
+cd ${Project_Folder}
+cd target/windows
 PrehistoricWorld.exe
 ```
 * To run in Linux:
 ```bash
-cd $Project_folder
-cd targetLinux
+cd ${Project_Folder}
+cd target/linux
 ./PrehistoricWorld
 ```
 * To test:
 ```bash
-cd $Project_folder
+cd ${Project_Folder}
 cd out
 ./test
 ```
