@@ -4,5 +4,5 @@
 
 int main() {
     puts("~~~utils_test~~~");
-	test_apply_function_to_all_sub_pointers();
+	testApplyFunctionToAllSubPointers();
 }

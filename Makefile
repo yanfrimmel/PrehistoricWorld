@@ -1,29 +1,31 @@
+TARGET_WINDOWS_DIR := target/windows
+TARGET_LINUX_DIR := target/linux
+RESOURCES := resources
+SDL_DLL := /usr/i686-w64-mingw32/bin/.
 COMPILE_HASKELL := ghc -c -O src/haskell/** -outputdir tmp
-COMPILE_C := ghc --make `sdl2-config --libs --cflags` -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/linux/PrehistoricWorld -Wall
-
-CC := gcc
-FLAGS := `sdl2-config --libs --cflags`  -ggdb3 -O0 --std=c99 -lSDL2_image -lm -Wall -I/usr/lib/ghc/include -Idist/build/
-
-COMPILE_C_WINDOWS := ghc --make `x86_64-w64-mingw32-gcc -lmingw32` -lSDL2main -lSDL2 -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/windows/PrehistoricWorld.exe -Wall
-
-CC_WINDOWS := x86_64-w64-mingw32-gcc
+# TODO: fix test
+COMPILE_TEST := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O test/c/*.c -no-hs-main -outputdir tmp -o target/test -Wall
+COMPILE_C := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/linux/PrehistoricWorld -Wall
+COMPILE_C_WINDOWS := ghc --make `x86_64-w64-mingw32-gcc -lmingw32` -O2 -lSDL2main -lSDL2 -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/windows/PrehistoricWorld.exe -Wall
 FLAGS_WINDOWS := -lmingw32 -lSDL2main -lSDL2 -ggdb3 -O0 --std=c99 -lSDL2_image -lm  -Wall
-
-HDRS := $(wildcard src/c/*.h) 
-SRCS := $(wildcard src/c/*.c)
-OBJS := $(SRCS:src/c/%.c=tmp/%.o)
-EXEC := targetLinux/PrehistoricWorld
-#---------------------------------------------------------- test
-FLAGS_TEST    := $(FLAGS)
-SRCS_TEST     := $(wildcard test/c/*.c)
-OBJS_TEST     := $(filter-out tmp/main.o, $(OBJS)) $(SRCS_TEST:test/c/%.c=tmp/%.o)
-EXEC_TEST     := targetLinux/test
 #---------------------------------------------------------- Targets
 .PHONY: all
 all: linux windows
-linux: COMPILE_HASKELL COMPILE_C
-windows: COMPILE_HASKELL COMPILE_C_WINDOWS
-	
+
+linux: CREATE_LINUX_TARGET COPY_RESOURCES_LINUX COMPILE_HASKELL COMPILE_C
+windows: CREATE_WINDOWS_TARGET COPY_RESOURCES_WINDWOS COPY_SDL_DLL COMPILE_HASKELL COMPILE_C_WINDOWS
+
+CREATE_LINUX_TARGET:
+	mkdir -p $(TARGET_LINUX_DIR)
+CREATE_WINDOWS_TARGET:
+	mkdir -p $(TARGET_WINDOWS_DIR)
+COPY_RESOURCES_LINUX:
+	cp -r $(RESOURCES) $(TARGET_LINUX_DIR)
+COPY_RESOURCES_WINDWOS:
+	cp -r $(RESOURCES) $(TARGET_WINDOWS_DIR)	
+COPY_SDL_DLL:
+	cp -r $(SDL_DLL) $(TARGET_WINDOWS_DIR)
+
 COMPILE_HASKELL: 
 	$(COMPILE_HASKELL) && echo "[OK]  $@"
 
@@ -33,29 +35,21 @@ COMPILE_C:
 COMPILE_C_WINDOWS: 
 	$(COMPILE_C_WINDOWS) && echo "[OK]  $@"	
 
-# $(EXEC): $(OBJS) $(HDRS) Makefile
-# 	$(CC) -o $@ $(OBJS) $(FLAGS) && echo "[OK]  $@"
 # --------------------------------------------------------------
 
 .PHONY: test
 
-test: $(EXEC_TEST)
+test: COMPILE_HASKELL REMOVE_MAIN BUILD_TEST
 
-$(EXEC_TEST): $(OBJS_TEST)
-	$(CC) -o $@ $(OBJS_TEST) $(FLAGS_TEST) && echo "EXEC_TEST [OK] $@"
+REMOVE_MAIN: 
+	rm tmp/src/c/main.o && echo "[OK]  $@"
 
-# --------------------------------------------------------------
-
-tmp/%.o: src/c/%.c
-	@$(CC) $(FLAGS) -c $< -o $@ && echo "tmp/%.o: src/c/%.c [OK]  $@"
-
-tmp/%.o: test/c/%.c
-	@$(CC) $(FLAGS_TEST) -c $< -o $@ && echo "tmp/%.o: test/c/%.c [OK]  $@"
+BUILD_TEST:
+	$(COMPILE_TEST) && echo "[OK]  $@"
 
 .PHONY: clean, clear
 
 clean clear:
 	@cabal clean
-	@rm -r -f target/linux/* && echo "[CL]  target/linux/"
-	@rm -r -f target/windows/* && echo "[CL]  target/windows/"
-	@rm -r -f tmp/* && echo "[CL]  tmp/"
+	@rm -r -f target && echo "[CL]  target"
+	@rm -r -f tmp && echo "[CL]  tmp"

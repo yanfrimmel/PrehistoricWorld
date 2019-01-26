@@ -14,8 +14,8 @@ static void change_array_element_function(int* num){
     (*num)++;
 }
 
-static void test_apply_function_to_all_sub_pointers(void) {
-    puts("test_apply_function_to_all_sub_pointers: ");
+static void testApplyFunctionToAllSubPointers(void) {
+    puts("applyFunctionToAllSubPointers: ");
     int **doublePointer = malloc (3* sizeof(int*));
     int x = 1;
     int y = 2;
@@ -30,7 +30,7 @@ static void test_apply_function_to_all_sub_pointers(void) {
 
     // assert(array[0] == 1);
     // assert(array[1] == 2);
-    apply_function_to_all_sub_pointers(doublePointer, 3, change_array_element_function);
+    applyFunctionToAllSubPointers(doublePointer, 3, change_array_element_function);
     printf("doublePointer[0]: %d\n", *doublePointer[0]);
     assert(*doublePointer[0] == 2);
     assert(*doublePointer[1] == 3);
