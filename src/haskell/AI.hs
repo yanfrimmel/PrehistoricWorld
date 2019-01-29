@@ -2,8 +2,8 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
  
 module AI where
- 
-import Foreign.C.Types
+
+import Foreign.C
  
 fibonacci :: Int -> Int
 fibonacci n = fibs !! n

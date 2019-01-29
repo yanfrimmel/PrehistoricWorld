@@ -1,55 +1,88 @@
-TARGET_WINDOWS_DIR := target/windows
-TARGET_LINUX_DIR := target/linux
+OUT_DIR := out
+OUT_DIR_WINDOWS := $(OUT_DIR)/windows
+OUT_DIR_LINUX := $(OUT_DIR)/linux
 RESOURCES := resources
+TEMP_DIR := tmp
 SDL_DLL := /usr/i686-w64-mingw32/bin/.
-COMPILE_HASKELL := ghc -c -O src/haskell/** -outputdir tmp
-# TODO: fix test
-COMPILE_TEST := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O test/c/*.c -no-hs-main -outputdir tmp -o target/test -Wall
-COMPILE_C := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/linux/PrehistoricWorld -Wall
-COMPILE_C_WINDOWS := ghc --make `x86_64-w64-mingw32-gcc -lmingw32` -O2 -lSDL2main -lSDL2 -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/windows/PrehistoricWorld.exe -Wall
-FLAGS_WINDOWS := -lmingw32 -lSDL2main -lSDL2 -ggdb3 -O0 --std=c99 -lSDL2_image -lm  -Wall
+GO_TO_TMP := cd $(TEMP_DIR)
+HASKELL_LIB_NAME := libAI.so
+HASKELL_LIB_PATH := $(TEMP_DIR)/$(HASKELL_LIB_NAME)
+HASKELL_EXEC_PATH := $(TEMP_DIR)/PrehistoricWorld 
+HASKELL_LIB := ghc -O2 -dynamic -shared -fPIC -o $(HASKELL_LIB_NAME) ../src/haskell/*.hs  ../src/hsbracket.c -lHSrts_thr-ghc8.0.2
+COMPILE_OBJ_LINUX := gcc -O2 -c `sdl2-config --libs --cflags` -lSDL2_image ../src/c/*.c
+COMPILE_OBJ_WINDOWS := gcc -O2 -c `x86_64-w64-mingw32-gcc -lmingw32` -lSDL2main -lSDL2 -lSDL2_image ../src/c/*.c
+EXEC_LINUX := gcc -o PrehistoricWorld ./*.o `sdl2-config --libs --cflags` -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
+EXEC_WINDWOS := gcc -o PrehistoricWorld.exe ./*.o `x86_64-w64-mingw32-gcc -lmingw32` -lSDL2main -lSDL2 -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
+
+# COMPILE_C := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/linux/PrehistoricWorld -Wall
+# COMPILE_C_WINDOWS := ghc --make `x86_64-w64-mingw32-gcc -lmingw32` -O2 -lSDL2main -lSDL2 -lSDL2_image -optc-O src/c/*.c src/haskell/*.hs -no-hs-main -outputdir tmp -o target/windows/PrehistoricWorld.exe -Wall
+ # TODO: fix test
+# COMPILE_TEST := ghc --make `sdl2-config --libs --cflags` -O2  -lSDL2_image -optc-O test/c/*.c -no-hs-main -outputdir tmp -o target/test -Wall
+# FLAGS_WINDOWS := -lmingw32 -lSDL2main -lSDL2 -ggdb3 -O0 --std=c99 -lSDL2_image -lm  -Wall
+
+#---------------------------------------------------------- test
+# FLAGS_TEST    := $(FLAGS)
+# SRCS_TEST     := $(wildcard test/c/*.c)
+# OBJS_TEST     := $(filter-out tmp/main.o, $(OBJS)) $(SRCS_TEST:test/c/%.c=tmp/%.o)
+# EXEC_TEST     := out/test
+
+
 #---------------------------------------------------------- Targets
 .PHONY: all
 all: linux windows
 
-linux: CREATE_LINUX_TARGET COPY_RESOURCES_LINUX COMPILE_HASKELL COMPILE_C
-windows: CREATE_WINDOWS_TARGET COPY_RESOURCES_WINDWOS COPY_SDL_DLL COMPILE_HASKELL COMPILE_C_WINDOWS
+linux: create_dirs_linux copy_resources_linux build_linux move_exec_linux
+windows: create_dirs_windows copy_resources_windows copy_sdl build_windows move_exec_windows
 
-CREATE_LINUX_TARGET:
-	mkdir -p $(TARGET_LINUX_DIR)
-CREATE_WINDOWS_TARGET:
-	mkdir -p $(TARGET_WINDOWS_DIR)
-COPY_RESOURCES_LINUX:
-	cp -r $(RESOURCES) $(TARGET_LINUX_DIR)
-COPY_RESOURCES_WINDWOS:
-	cp -r $(RESOURCES) $(TARGET_WINDOWS_DIR)	
-COPY_SDL_DLL:
-	cp -r $(SDL_DLL) $(TARGET_WINDOWS_DIR)
+create_dirs_linux:
+	mkdir -p $(OUT_DIR_LINUX);
+	mkdir -p $(TEMP_DIR);
 
-COMPILE_HASKELL: 
-	$(COMPILE_HASKELL) && echo "[OK]  $@"
+create_dirs_windows:
+	mkdir -p $(OUT_DIR_WINDOWS);
+	mkdir -p $(TEMP_DIR);
 
-COMPILE_C: 
-	$(COMPILE_C) && echo "[OK]  $@"
+copy_resources_linux:
+	cp -r $(RESOURCES) $(OUT_DIR_LINUX)
 
-COMPILE_C_WINDOWS: 
-	$(COMPILE_C_WINDOWS) && echo "[OK]  $@"	
+copy_resources_windows:
+	cp -r $(RESOURCES) $(OUT_DIR_WINDOWS)	
+
+copy_sdl:
+	cp -r $(SDL_DLL) $(OUT_DIR_WINDOWS)
+
+build_linux: 
+	$(GO_TO_TMP) && $(HASKELL_LIB);
+	$(GO_TO_TMP) && $(COMPILE_OBJ_LINUX); 
+	$(GO_TO_TMP) && $(EXEC_LINUX);
+
+build_windows: 
+	$(GO_TO_TMP) && $(HASKELL_LIB);
+	$(GO_TO_TMP) && $(COMPILE_OBJ_WINDOWS); 
+	$(GO_TO_TMP) && $(EXEC_WINDWOS);
+
+move_exec_linux: 
+	mv $(HASKELL_LIB_PATH) $(OUT_DIR_LINUX);
+	mv $(HASKELL_EXEC_PATH) $(OUT_DIR_LINUX);
+	
+move_exec_windows: 
+	mv $(HASKELL_LIB_PATH) $(OUT_DIR_LINUX);
+	mv $(HASKELL_EXEC_PATH).exe $(OUT_DIR_LINUX);
 
 # --------------------------------------------------------------
 
 .PHONY: test
 
-test: COMPILE_HASKELL REMOVE_MAIN BUILD_TEST
+test: HASKELL_LIB remove_main build_test
 
-REMOVE_MAIN: 
-	rm tmp/src/c/main.o && echo "[OK]  $@"
+remove_main: 
+	rm $(TEMP_DIR)/main.o && echo "[OK]  $@"
 
-BUILD_TEST:
+build_test:
 	$(COMPILE_TEST) && echo "[OK]  $@"
 
 .PHONY: clean, clear
 
 clean clear:
-	@cabal clean
-	@rm -r -f target && echo "[CL]  target"
-	@rm -r -f tmp && echo "[CL]  tmp"
+	@rm -r -f $(OUT_DIR)/ && echo "[CL]  target"
+	@rm -r -f $(TEMP_DIR)/ && echo "[CL]  tmp"
