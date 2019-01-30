@@ -1,6 +1,7 @@
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -Wall                 #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
- 
+
 module AI where
 
 import Foreign.C

@@ -4,7 +4,12 @@
 static void my_enter(void) __attribute__((constructor));
 static void my_enter(void)
 {
-    static char *argv[] = {"tmp/libAI.so", 0}, **argv_ = argv;
+    static char *argv[] = {"tmp/libAI.so", 0};
+    #if defined(__MINGW32__)
+        argv[0] = "tmp/libAI.dll";
+        printf("__MINGW32__\n");
+    #endif
+    static char **argv_ = argv;
     static int argc = 1;
     hs_init(&argc, &argv_);
 }
