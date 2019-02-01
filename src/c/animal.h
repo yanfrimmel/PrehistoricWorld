@@ -59,7 +59,7 @@ struct Animal {
 };
 typedef struct Animal Animal;
 
-Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender);
+Animal* initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender);
 void destroyHumanPlayer();
 void editAnimalMovenet(Movement *movement, float xPos, float yPos, float xVel, float yVel);
 void editAnimalDistance_fromTarget(DistanceFromTarget *target,

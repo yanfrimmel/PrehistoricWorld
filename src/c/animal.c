@@ -1,26 +1,27 @@
 #include "animal.h"
 
-Animal initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender) {
-    humanPlayer = (Animal *)malloc(sizeof(Animal));
-    if (humanPlayer == NULL) {
+Animal* initAnimal(int xPos, int yPos, ANIMAL_TYPE animalType, GENDER gender) {
+    Animal* animal = (Animal *) malloc (sizeof(Animal));
+    if (animal == NULL) {
         printf("Error - can't allocate\n");
-        return;
+        return NULL;
     }
 
-    humanPlayer->imagePath = getImagePathStringByAnimalTypeAndGender(animalType,gender);
-    humanPlayer->RectAndTexture = loadImageTextureAndRectAndTexture(humanPlayer->imagePath);
+    animal->imagePath = getImagePathStringByAnimalTypeAndGender(animalType,gender);
+    printf("animal->imagePath: %s\n", animal->imagePath);
+    animal->RectAndTexture = loadImageTextureAndRectAndTexture(animal->imagePath);
 
-    humanPlayer->movement.xPos = xPos;
-    humanPlayer->movement.yPos = yPos;
-    humanPlayer->movement.xVel = 0;
-    humanPlayer->movement.yVel = 0;
+    animal->movement.xPos = xPos;
+    animal->movement.yPos = yPos;
+    animal->movement.xVel = 0;
+    animal->movement.yVel = 0;
 
-    humanPlayer->toTarget.distance = 0;
-    humanPlayer->toTarget.deltaX = 0;
-    humanPlayer->toTarget.deltaY = 0;
-    humanPlayer->toTarget.targetX = 0;
-    humanPlayer->toTarget.targetY = 0;
-    return *humanPlayer;
+    animal->toTarget.distance = 0;
+    animal->toTarget.deltaX = 0;
+    animal->toTarget.deltaY = 0;
+    animal->toTarget.targetX = 0;
+    animal->toTarget.targetY = 0;
+    return animal;
 }
 
 void destroyHumanPlayer() {

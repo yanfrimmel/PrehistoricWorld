@@ -54,7 +54,7 @@ void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS
 void play() {
     int closeRequested = 0;
     printf("Pre initPlayer \n");
-    initAnimal((WINDOW_WIDTH - IMAGE_PIXELS) / 2, (WINDOW_HEIGHT - IMAGE_PIXELS) / 2, human, male);
+    humanPlayer = initAnimal((WINDOW_WIDTH - IMAGE_PIXELS) / 2, (WINDOW_HEIGHT - IMAGE_PIXELS) / 2, human, male);
     SDL_Texture* playerTexture = humanPlayer->RectAndTexture.texture;
     printf("Pre gridInit \n");
     gridInit(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);

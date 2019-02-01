@@ -9,7 +9,7 @@
             "name": "run",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/targetLinux/PrehistoricWorld",
+            "program": "${workspaceFolder}/build/linux/PrehistoricWorld",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/resources/",
@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Makefile"
+            "preLaunchTask": "make linux"
         }, 
         {
             "name": "test",
