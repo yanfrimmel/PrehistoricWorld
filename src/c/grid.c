@@ -71,7 +71,7 @@ Grid gridInit() {
 
 
 void gridInitTile(Tile *tile, int i, int j, TILE_TYPE type) {
-    printf("gridInitTile \n");
+    // printf("gridInitTile \n");
     tile->tileType = type;
     RectAndTexture RectAndTexture = getRectAndTextureByTileType(tile->tileType); 
     tile->RectAndTexture = RectAndTexture;

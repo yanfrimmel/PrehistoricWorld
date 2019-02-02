@@ -46,7 +46,7 @@ void fpsCounterLoop(Uint32* startclock,  Uint32* deltaclock,  Uint32* currentFPS
     *deltaclock = SDL_GetTicks() - *startclock;
     if ( *deltaclock != 0 ) {
         *currentFPS = 1000 / *deltaclock;
-         printf("FPS:%d\n",*currentFPS);
+         // printf("FPS:%d\n",*currentFPS);
     }
 
 }

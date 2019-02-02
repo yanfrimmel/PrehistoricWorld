@@ -3,8 +3,6 @@
 
 int main( int argc, char** argv ) {
     //HASKELL CALL
-    printf("start hs_init: \n");
-    // hs_init(&argc, &argv);
     int i;
     i = fibonacci_hs(42);
     printf("~~~~~~~~~~~~~~~~~~~~~~~Fibonacci: %d\n", i);
