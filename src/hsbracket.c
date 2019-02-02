@@ -6,7 +6,7 @@ static void my_enter(void)
 {
     static char *argv[] = {"tmp/libAI.so", 0};
     #if defined(__MINGW32__)
-        argv[0] = "tmp/libAI.dll.a";
+        argv[0] = "tmp/libAI.dll";
     #endif
     static char **argv_ = argv;
     static int argc = 1;
