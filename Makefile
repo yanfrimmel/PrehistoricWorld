@@ -16,8 +16,8 @@ HASKELL_LIB_PATH_WINDOWS := $(TEMP_DIR)/$(HASKELL_LIB_NAME_WINDOWS)
 HASKELL_EXEC_PATH := $(TEMP_DIR)/PrehistoricWorld
 HASKELL_LIB := $(GHC) -O2 -dynamic -shared -fPIC -o $(HASKELL_LIB_NAME_LINUX) ../src/haskell/*.hs ../src/hsbracket.c -lHSrts_thr-ghc8.0.2
 HASKELL_LIB_WINDOWS := $(GHC_WIN) -shared -o $(HASKELL_LIB_NAME_WINDOWS) ../src/haskell/*.hs ../src/hsbracket.c -lHSrts_thr
-COMPILE_OBJ_LINUX := $(CC) -O2 -c `sdl2-config --libs --cflags` -lSDL2_image ../src/c/*.c -I/usr/lib/ghc/include
-COMPILE_OBJ_WINDOWS := $(CC_WIN) -O2 -c -lmingw32 -lSDL2main -lSDL2 -lSDL2_image ../src/c/*.c -I/usr/lib/ghc/include
+COMPILE_OBJ_LINUX := $(CC) -O2 -c `sdl2-config --libs --cflags` -lSDL2_image ../src/c/*.c
+COMPILE_OBJ_WINDOWS := $(CC_WIN) -O2 -c -lmingw32 -lSDL2main -lSDL2 -lSDL2_image ../src/c/*.c
 EXEC_LINUX := $(CC) -o PrehistoricWorld ./*.o `sdl2-config --libs --cflags` -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
 EXEC_WINDWOS := $(CC_WIN) -o PrehistoricWorld.exe ./*.o -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
 

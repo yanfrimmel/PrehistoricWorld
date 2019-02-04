@@ -1,53 +1,21 @@
-/* This file is hsbracket.c. */
-#ifdef WIN32
-#include <windows.h>
-#include <Rts.h>
-
-// TODO: Make it work for windows!
-
-// extern void __stginit_AI(void);
-
-// BOOL WINAPI DllMain(HINSTANCE hModule, DWORD reason, LPVOID reserved)
-// {
-//   int argc = 1;
-//   static char arg0[] = "libAI.dll";
-//   static char *args[] = {arg0, NULL};
-//   char **argv = args;
-//   hs_init(&argc, &argv);
-//   if (reason == DLL_PROCESS_ATTACH) {
-    
-//     // startupHaskell(1, args, __stginit_AI);
-//     #ifdef __GLASGOW_HASKELL__
-//     hs_add_root(__stginit_AI);
-//     #endif
-//   }
-//   return TRUE;
-// }
-
-
-// static void ai_init() {
-
-// }
-
-// static void ai_exit() {
-// }
-
-#else
 #include <stdlib.h>
-#include <HsFFI.h>
+#include "HsFFI.h"
+// This works for GHC 8.0.2
+HsBool mylib_init(void) __attribute__((constructor));
+HsBool mylib_init(void){
+  int argc = 2;
+  char *argv[] = { "+RTS", "-A32m", NULL };
+  char **pargv = argv;
 
-static void ai_init(void) __attribute__((constructor));
-static void ai_init() {
-  int argc = 1;
-  static char arg0[] = "libAI.so";
-  static char *args[] = {arg0, NULL};
-  char **argv = args;
-  hs_init(&argc, &argv);
+  // Initialize Haskell runtime
+  hs_init(&argc, &pargv);
+
+  // do any other initialization here and
+  // return false if there was a problem
+  return HS_BOOL_TRUE;
 }
 
-static void ai_exit(void) __attribute__((destructor));
-static void ai_exit() {
+void mylib_end(void) __attribute__((destructor));
+void mylib_end(void){
   hs_exit();
 }
-
-#endif
