@@ -12,7 +12,12 @@
         "game_map.h": "c",
         "game.h": "c",
         "grid.h": "c",
-        "ai_stub.h": "c"
+        "ai_stub.h": "c",
+        "rts.h": "c",
+        "hsffi.h": "c",
+        "stdlib.h": "c",
+        "rtsapi.h": "c",
+        "hsbracket.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
