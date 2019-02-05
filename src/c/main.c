@@ -1,14 +1,11 @@
 #include <stdio.h>
+#include "HsFFI.h"
 #include "game.h"
-// #ifdef WIN32
-//     #include <HsFFI.h>
-// #endif
 
 int main( int argc, char** argv ) {
+    // start haskell RTS
+    HsStart();  
     //HASKELL CALL
-    // #ifdef WIN32
-    //     hs_init(&argc, &argv);  
-    // #endif
     int i;
     i = fibonacci_hs(42);
     printf("~~~~~~~~~~~~~~~~~~~~~~~Fibonacci: %d\n", i);
@@ -18,9 +15,8 @@ int main( int argc, char** argv ) {
     renderer = createRenderer();
     printf("Pre gameLoop\n"); 
     play();
-    // #ifdef WIN32
-    //     hs_exit();  
-    // #endif
+    // exit haskell RTS
+    HsEnd();  
     return 0;
 }
 
