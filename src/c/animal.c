@@ -81,15 +81,19 @@ void updatePosition(Animal* animal) {
     animal->toTarget.distance = sqrt(animal->toTarget.deltaX * animal->toTarget.deltaX + animal->toTarget.deltaY * animal->toTarget.deltaY);
 }
 
-void borderOrTargetCollision(Animal* animal) { 
-     if (animal->movement.xPos <= 0) animal->movement.xPos = 0;
-        if (animal->movement.yPos <= 0) animal->movement.yPos = 0;
-        if (animal->movement.xPos >= WINDOW_WIDTH - animal->RectAndTexture.rect.w) animal->movement.xPos = WINDOW_WIDTH - animal->RectAndTexture.rect.w;
-        if (animal->movement.yPos >= WINDOW_HEIGHT - animal->RectAndTexture.rect.h) animal->movement.yPos = WINDOW_HEIGHT - animal->RectAndTexture.rect.h;
-        if (animal->toTarget.distance < IMAGE_PIXELS/2) {
-                printf("at target\n");
-                animal->movement.xVel = animal->movement.yVel = 0;
-        }
+bool stayInBorderCheckTargetCollision(Animal* animal) { 
+    //check border collision
+    if (animal->movement.xPos <= 0) animal->movement.xPos = 0;
+    if (animal->movement.yPos <= 0) animal->movement.yPos = 0;
+    if (animal->movement.xPos >= WINDOW_WIDTH - animal->RectAndTexture.rect.w) animal->movement.xPos = WINDOW_WIDTH - animal->RectAndTexture.rect.w;
+    if (animal->movement.yPos >= WINDOW_HEIGHT - animal->RectAndTexture.rect.h) animal->movement.yPos = WINDOW_HEIGHT - animal->RectAndTexture.rect.h;
+    
+    if (animal->toTarget.distance < IMAGE_PIXELS/2) {
+            // printf("at target\n");
+            animal->movement.xVel = animal->movement.yVel = 0;
+            return true;
+    }
+    return false;
 }
 
 void updateRectPosition(Animal* animal) {
@@ -99,6 +103,6 @@ void updateRectPosition(Animal* animal) {
 
 void updateAnimal(Animal* animal) { 
     updatePosition(animal);
-    borderOrTargetCollision(animal);
+    stayInBorderCheckTargetCollision(animal);
     updateRectPosition(animal);
 }

@@ -7,20 +7,20 @@ OUT_DIR_WINDOWS := $(OUT_DIR)/windows
 OUT_DIR_LINUX := $(OUT_DIR)/linux
 RESOURCES := resources
 TEMP_DIR := tmp
-SDL_DLL := /usr/i686-w64-mingw32/bin/SDL2*.dll
+SDL_DLL := /usr/x86_64-w64-mingw32/bin/*
 GO_TO_TMP := cd $(TEMP_DIR)
 HASKELL_LIB_NAME_LINUX := libAI.so
 HASKELL_LIB_PATH_LINUX := $(TEMP_DIR)/$(HASKELL_LIB_NAME_LINUX)
 HASKELL_LIB_NAME_WINDOWS := libAI.dll
 HASKELL_LIB_PATH_WINDOWS := $(TEMP_DIR)/$(HASKELL_LIB_NAME_WINDOWS)
-HASKELL_EXEC_PATH := $(TEMP_DIR)/PrehistoricWorld
+RUNNER_NAME := PrehistoricWorld
+HASKELL_EXEC_PATH := $(TEMP_DIR)/$(RUNNER_NAME)
 HASKELL_LIB := $(GHC) -O2 -dynamic -shared -fPIC -o $(HASKELL_LIB_NAME_LINUX) ../src/haskell/*.hs ../src/hsbracket.c -lHSrts_thr-ghc8.0.2
 HASKELL_LIB_WINDOWS := $(GHC_WIN) -shared -o $(HASKELL_LIB_NAME_WINDOWS) ../src/haskell/*.hs ../src/hsbracket.c -lHSrts_thr
-# HASKELL_LIB_WINDOWS := $(GHC_WIN) -c ../src/haskell/*.hs && $(GHC_WIN) -c ../src/hsbracket.c && $(GHC_WIN) -shared -o $(HASKELL_LIB_NAME_WINDOWS) ../src/haskell/*.o ../src/hsbracket.o -lHSrts_thr
 COMPILE_OBJ_LINUX := $(CC) -O2 -c `sdl2-config --libs --cflags` -lSDL2_image ../src/c/*.c -I/usr/lib/ghc/include
 COMPILE_OBJ_WINDOWS := $(CC_WIN) -O2 -c -lmingw32 -lSDL2main -lSDL2 -lSDL2_image ../src/c/*.c -I/usr/lib/ghc/include
-EXEC_LINUX := $(CC) -o PrehistoricWorld ./*.o `sdl2-config --libs --cflags` -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
-EXEC_WINDWOS := $(CC_WIN) -o PrehistoricWorld.exe ./*.o -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
+EXEC_LINUX := $(CC) -o $(RUNNER_NAME) ./*.o `sdl2-config --libs --cflags` -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
+EXEC_WINDWOS := $(CC_WIN) -o $(RUNNER_NAME).exe ./*.o -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lm -L. -lAI -Wl,-rpath,'$$ORIGIN'
 
 .PHONY: all
 all: linux windows
@@ -82,3 +82,13 @@ clean clear:
 	@rm -f src/haskell/*.o src/haskell/*.hi src/haskell/*.h && echo "[CL]  src/haskell"
 	@rm -r -f $(OUT_DIR)/ && echo "[CL]  target"
 	@rm -r -f $(TEMP_DIR)/ && echo "[CL]  tmp"
+
+.PHONY: run
+
+run:
+	$(OUT_DIR_LINUX)/$(RUNNER_NAME)	
+
+.PHONY: runwin
+
+runwin:
+	wine $(OUT_DIR_WINDOWS)/$(RUNNER_NAME).exe	
