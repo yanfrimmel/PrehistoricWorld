@@ -1,5 +1,5 @@
 # PrehistoricWorld
-An attempt to implement a simple 2d survival game written in C as a back-end layer over SDL 2 library to interface with Haskell with "Foreign Function Interface", while Haskell is used to implement the game logic and AI.
+An attempt to implement a simple 2d game template written in C as a back-end layer over SDL 2 library to interface with Haskell with "Foreign Function Interface", while Haskell is used to implement the game logic and AI.
 The project host OS is Linux and the build targets are Windows & Linux.
 
 #### Prerequisites:
